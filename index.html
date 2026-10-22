@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZeMA Halle 10 – Digitaler Zwilling</title>
+<meta name="description" content="Begehbarer digitaler Zwilling der ZeMA-Halle 10 (three.js), rekonstruiert aus dem virtuellen Rundgang">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath d=%22M8 1l7 7-7 7-7-7z%22 fill=%22%232fb7c9%22/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/build/three.module.js",
+    "three/addons/": "./vendor/three/examples/jsm/",
+    "three-mesh-bvh": "./vendor/three-mesh-bvh/build/index.module.js"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="view" tabindex="0" aria-label="3D"></canvas>
+
+<!-- start screen (also the loading screen) -->
+<div id="loading" class="overlay start">
+  <div id="start-bg" class="start-bg"></div>
+  <div class="loading-card">
+    <p class="kicker">ZeMA · Saarbrücken</p>
+    <h1 id="app-title">ZeMA Halle 10 – Digitaler Zwilling</h1>
+    <p id="app-sub" class="sub">Begehen und entdecken – aus dem virtuellen Rundgang rekonstruiert</p>
+    <ul id="features" class="features"></ul>
+    <div class="bar"><div id="load-bar"></div></div>
+    <p id="load-text" class="small" data-i18n="loading">Lade …</p>
+    <div class="start-actions">
+      <button id="start-btn" class="primary" hidden data-i18n="start_tour">Rundgang starten</button>
+      <button id="start-direct" hidden data-i18n="start_direct">Direkt loslegen</button>
+    </div>
+    <p class="small controls-hint" data-i18n="controls_short">WASD + Maus bewegen · E Info · Tab Checkliste · M Karte · P Panorama</p>
+    <p class="lang-switch"><button class="link" data-lang="de">Deutsch</button> · <button class="link" data-lang="en">English</button></p>
+    <p id="load-error" class="error" hidden></p>
+    <p id="credits" class="credits"></p>
+  </div>
+</div>
+
+<!-- intro (camera flight from the hub) -->
+<div id="intro-bar" hidden>
+  <span id="intro-caption"></span>
+  <button id="intro-skip" data-i18n="intro_skip">Überspringen</button>
+</div>
+
+<!-- HUD -->
+<div id="hud" hidden>
+  <div id="topbar">
+    <button id="discovered" class="pill" data-i18n-title="checklist" title="Checkliste">0 / 0</button>
+    <span id="mode-pill" class="pill dim" hidden></span>
+    <span id="fps" class="pill dim" hidden>– fps</span>
+    <span class="spacer"></span>
+    <button id="btn-stations" class="icon" data-i18n-title="stations" title="Stationen">☰</button>
+    <button id="btn-pano" class="icon" data-i18n-title="pano_mode" title="Panorama">◎</button>
+    <button id="btn-proj" class="icon" data-i18n-title="proj_tex" title="Foto-Textur">▦</button>
+    <button id="btn-map" class="icon" data-i18n-title="map" title="Karte">⌖</button>
+    <button id="btn-settings" class="icon" data-i18n-title="settings" title="Einstellungen">⚙</button>
+    <button id="btn-help" class="icon" data-i18n-title="help" title="Hilfe">?</button>
+  </div>
+  <div id="crosshair"></div>
+  <div id="prompt" hidden></div>
+  <div id="toast" hidden></div>
+  <div id="minimap-wrap"><canvas id="minimap" width="220" height="220"></canvas></div>
+  <div id="pano-bar" hidden>
+    <span id="pano-label"></span>
+    <span id="pano-note" class="small" hidden></span>
+    <label id="pano-opacity-wrap"><span data-i18n="pano_opacity">Deckkraft</span> <input id="pano-opacity" type="range" min="0" max="1" step="0.05" value="1"></label>
+    <button id="pano-prev">◀</button><button id="pano-next">▶</button>
+    <button id="pano-exit" data-i18n="exit">Verlassen</button>
+  </div>
+  <!-- touch controls -->
+  <div id="joystick" hidden><div id="joy-knob"></div></div>
+</div>
+
+<!-- panels -->
+<div id="panel-info" class="panel" hidden role="dialog">
+  <button class="close" data-close>✕</button>
+  <h2 id="info-title"></h2>
+  <div id="info-badges" class="badges"></div>
+  <div id="info-desc"></div>
+  <p><button id="info-pano" class="small-btn" hidden data-i18n="view_pano">Echtes Foto ansehen (P)</button></p>
+  <div id="info-media"></div>
+</div>
+
+<div id="panel-stations" class="panel" hidden role="dialog">
+  <button class="close" data-close>✕</button>
+  <h2 data-i18n="checklist">Checkliste</h2>
+  <div id="progress" class="progress"><div class="bar"><div></div></div><span class="txt small"></span></div>
+  <p class="small" data-i18n="stations_hint">Klick: hinteleportieren</p>
+  <ul id="station-list"></ul>
+  <button id="reset-progress" class="small-btn" data-i18n="reset_progress">Fortschritt zurücksetzen</button>
+</div>
+
+<div id="panel-settings" class="panel" hidden role="dialog">
+  <button class="close" data-close>✕</button>
+  <h2 data-i18n="settings">Einstellungen</h2>
+  <label class="row"><span data-i18n="language">Sprache</span>
+    <select id="set-lang"><option value="de">Deutsch</option><option value="en">English</option></select></label>
+  <label class="row"><span data-i18n="quality">Qualität</span>
+    <select id="set-quality"><option value="low" data-i18n="q_low">Niedrig</option><option value="medium" data-i18n="q_medium">Mittel</option><option value="high" data-i18n="q_high">Hoch</option></select></label>
+  <label class="row"><span data-i18n="sensitivity">Mausempfindlichkeit</span>
+    <input id="set-sens" type="range" min="0.2" max="3" step="0.1" value="1"></label>
+  <label class="row"><span data-i18n="fov">Sichtfeld</span>
+    <input id="set-fov" type="range" min="50" max="100" step="1" value="70"></label>
+  <label class="row"><span data-i18n="invert_y">Maus Y invertieren</span><input id="set-invert" type="checkbox"></label>
+  <label class="row"><span data-i18n="proj_tex">Foto-Textur (Panoramen projizieren)</span><input id="set-proj" type="checkbox" checked></label>
+  <label class="row"><span data-i18n="show_fps">FPS anzeigen</span><input id="set-fps" type="checkbox"></label>
+  <label class="row"><span data-i18n="debug_view">Debug-Ansicht</span>
+    <select id="set-debug"><option value="0">–</option><option value="1" data-i18n="dbg_weights">Pano-Gewichte</option><option value="2" data-i18n="dbg_coverage">Abdeckung</option><option value="3" data-i18n="dbg_baked">nur Basistextur</option></select></label>
+</div>
+
+<div id="panel-help" class="panel" hidden role="dialog">
+  <button class="close" data-close>✕</button>
+  <h2 data-i18n="help">Steuerung</h2>
+  <table class="keys" id="help-table"></table>
+  <p class="small" data-i18n="help_touch">Touch: linker Daumen bewegen, rechts wischen zum Umsehen.</p>
+</div>
+
+<div id="bigmap" class="overlay" hidden><canvas id="bigmap-canvas"></canvas><p class="small" data-i18n="map_hint">Klick auf eine Station: Teleport · M: schließen</p></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

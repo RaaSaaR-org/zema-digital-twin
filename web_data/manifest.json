@@ -1,0 +1,908 @@
+{
+ "schema": "zema_twin.manifest.v1",
+ "id": "zema-halle10-twin-v2",
+ "title": {
+  "de": "ZeMA Halle 10 – Digitaler Zwilling",
+  "en": "ZeMA Hall 10 – Digital Twin"
+ },
+ "subtitle": {
+  "de": "Begehen und entdecken – aus dem virtuellen Rundgang rekonstruiert",
+  "en": "Walk and discover – reconstructed from the virtual tour"
+ },
+ "frame": "W: metres, right-handed, z up, floor z=0. glb files are glTF y-up: (x,y,z)_W -> (x,z,-y)_GL.",
+ "placeholder": false,
+ "built": "2026-10-22 08:00",
+ "hall": [
+  {
+   "url": "hall_lo.glb",
+   "lod": 0
+  },
+  {
+   "url": "hall_hi.glb",
+   "lod": 1
+  }
+ ],
+ "collider": {
+  "url": "collider.glb"
+ },
+ "spawn": {
+  "position_W": [
+   10.325,
+   -6.175,
+   0.0
+  ],
+  "heading_deg": -137.0,
+  "note": "between the hub and the KI-Inspektion station, looking at the G1"
+ },
+ "intro": {
+  "pano_id": "media_2EDB1CA7_1E55_2AD5_41B1_9DB5C9B14916",
+  "start_yaw_deg": -150.0,
+  "hold_s": 3.0,
+  "fade_s": 1.2,
+  "fly_s": 6.0,
+  "via_W": [
+   [
+    13.6,
+    -5.9,
+    3.0
+   ],
+   [
+    11.8,
+    -6.1,
+    2.0
+   ]
+  ],
+  "note": "starts inside the real hub photo (elevated tour camera), fades into the twin and flies to the spawn"
+ },
+ "bounds_W": {
+  "min": [
+   -5.5,
+   -23.5,
+   -0.1
+  ],
+  "max": [
+   50.2,
+   12.7,
+   8.7
+  ]
+ },
+ "minimap": {
+  "image": "minimap.png",
+  "bounds_W": {
+   "min": [
+    -5.5,
+    -23.5
+   ],
+   "max": [
+    50.2,
+    12.7
+   ]
+  },
+  "clip_height_m": 2.6
+ },
+ "nav": {
+  "image": "nav.png",
+  "cell_m": 0.05,
+  "bounds_W": {
+   "min": [
+    -5.5,
+    -23.5
+   ],
+   "max": [
+    50.2,
+    12.7
+   ]
+  },
+  "band_z_m": [
+   0.12,
+   1.75
+  ],
+  "dilation_m": 0.33,
+  "free_fraction": 0.7069
+ },
+ "pano_cam_convention": "x_right_y_down_z_forward",
+ "projection": {
+  "cam_near_m": 2.0,
+  "cam_far_m": 6.0,
+  "note": "a pano's photo is projected fully while the camera is within 2 m of its tour spot and fades to the baked texture by 6 m (held-out DJI frames: best gradient correlation, equal PSNR; web/_check/between)"
+ },
+ "panos": [
+  {
+   "id": "media_95583947_1FF5_6AC5_41A9_79BC9AD0D8A7",
+   "equirect": {
+    "url": "panos/media_95583947_1FF5_6AC5_41A9_79BC9AD0D8A7/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_95583947_1FF5_6AC5_41A9_79BC9AD0D8A7/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_95583947_1FF5_6AC5_41A9_79BC9AD0D8A7/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      0.838175566,
+      -0.027735983,
+      0.544694809
+     ],
+     [
+      -0.545189719,
+      -0.0148444,
+      0.838181253
+     ],
+     [
+      -0.015162113,
+      -0.999505057,
+      -0.027563586
+     ]
+    ],
+    "t_W": [
+     21.5283,
+     -9.2093,
+     1.4803
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    1.0858,
+    1.0547,
+    1.035
+   ],
+   "label": {
+    "de": "MRI mit Sprache (UR10)",
+    "en": "HRI with speech (UR10)"
+   },
+   "project": true,
+   "pose_quality": "high",
+   "sigma": {
+    "pos_m": 0.2,
+    "rot_deg": 0.5
+   }
+  },
+  {
+   "id": "media_9D15058B_1FCD_1A4E_41BC_01F37658EB07",
+   "equirect": {
+    "url": "panos/media_9D15058B_1FCD_1A4E_41BC_01F37658EB07/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_9D15058B_1FCD_1A4E_41BC_01F37658EB07/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_9D15058B_1FCD_1A4E_41BC_01F37658EB07/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      -0.898384365,
+      0.000509399,
+      0.439209828
+     ],
+     [
+      -0.439100381,
+      0.021311358,
+      -0.898185215
+     ],
+     [
+      -0.009817693,
+      -0.999772757,
+      -0.018922113
+     ]
+    ],
+    "t_W": [
+     8.1988,
+     -8.3093,
+     1.4602
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    0.7517,
+    0.7648,
+    0.7733
+   ],
+   "label": {
+    "de": "KI-Inspektion (VADER)",
+    "en": "AI inspection (VADER)"
+   },
+   "project": true,
+   "pose_quality": "high",
+   "sigma": {
+    "pos_m": 0.2,
+    "rot_deg": 0.538
+   }
+  },
+  {
+   "id": "media_679879BB_1FD3_2A4B_41B4_29648D6F807A",
+   "equirect": {
+    "url": "panos/media_679879BB_1FD3_2A4B_41B4_29648D6F807A/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_679879BB_1FD3_2A4B_41B4_29648D6F807A/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_679879BB_1FD3_2A4B_41B4_29648D6F807A/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      0.94705762,
+      -0.006715023,
+      -0.320993417
+     ],
+     [
+      0.32063772,
+      -0.031699727,
+      0.946671316
+     ],
+     [
+      -0.016532323,
+      -0.99947488,
+      -0.027868378
+     ]
+    ],
+    "t_W": [
+     30.1565,
+     1.7463,
+     1.441
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    1.1379,
+    1.1641,
+    1.2096
+   ],
+   "label": {
+    "de": "Demontage Brennstoffzellen",
+    "en": "Fuel-cell disassembly"
+   },
+   "project": true,
+   "pose_quality": "high",
+   "sigma": {
+    "pos_m": 0.2,
+    "rot_deg": 0.5
+   }
+  },
+  {
+   "id": "media_2EDB1CA7_1E55_2AD5_41B1_9DB5C9B14916",
+   "equirect": {
+    "url": "panos/media_2EDB1CA7_1E55_2AD5_41B1_9DB5C9B14916/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_2EDB1CA7_1E55_2AD5_41B1_9DB5C9B14916/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_2EDB1CA7_1E55_2AD5_41B1_9DB5C9B14916/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      0.914122786,
+      0.02065322,
+      0.404911072
+     ],
+     [
+      -0.405108651,
+      0.006314787,
+      0.914246741
+     ],
+     [
+      0.016325212,
+      -0.999766757,
+      0.014139289
+     ]
+    ],
+    "t_W": [
+     15.9475,
+     -5.3465,
+     4.3248
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    0.9285,
+    0.9035,
+    0.8915
+   ],
+   "label": {
+    "de": "Halle 10 (Überblick)",
+    "en": "Hall 10 (overview)"
+   },
+   "project": true,
+   "pose_quality": "high",
+   "sigma": {
+    "pos_m": 0.2,
+    "rot_deg": 0.782
+   }
+  },
+  {
+   "id": "media_951E34E0_1FD5_1BF8_41A9_EEFC93315F6A",
+   "equirect": {
+    "url": "panos/media_951E34E0_1FD5_1BF8_41A9_EEFC93315F6A/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_951E34E0_1FD5_1BF8_41A9_EEFC93315F6A/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_951E34E0_1FD5_1BF8_41A9_EEFC93315F6A/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      -0.846366624,
+      0.022908428,
+      -0.532107829
+     ],
+     [
+      0.532312272,
+      0.003507354,
+      -0.84654081
+     ],
+     [
+      -0.017526629,
+      -0.999731415,
+      -0.015162945
+     ]
+    ],
+    "t_W": [
+     11.3885,
+     -0.2787,
+     1.7271
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    1.2834,
+    1.2874,
+    1.312
+   ],
+   "label": {
+    "de": "LLM-Demonstrator",
+    "en": "LLM demonstrator"
+   },
+   "project": true,
+   "pose_quality": "high",
+   "sigma": {
+    "pos_m": 0.2,
+    "rot_deg": 0.5
+   }
+  },
+  {
+   "id": "media_64DB003E_1FDD_1A4B_41BC_B1215C200E50",
+   "equirect": {
+    "url": "panos/media_64DB003E_1FDD_1A4B_41BC_B1215C200E50/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_64DB003E_1FDD_1A4B_41BC_B1215C200E50/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_64DB003E_1FDD_1A4B_41BC_B1215C200E50/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      -0.948753535,
+      0.020694738,
+      -0.31533864
+     ],
+     [
+      0.315565023,
+      0.008693286,
+      -0.948864133
+     ],
+     [
+      -0.016895166,
+      -0.999748046,
+      -0.014778321
+     ]
+    ],
+    "t_W": [
+     30.9536,
+     -3.1075,
+     1.5375
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    1.0569,
+    0.9814,
+    0.8998
+   ],
+   "label": {
+    "de": "MRK (RICAIP)",
+    "en": "HRC (RICAIP)"
+   },
+   "project": true,
+   "pose_quality": "high",
+   "sigma": {
+    "pos_m": 0.2,
+    "rot_deg": 0.5
+   }
+  },
+  {
+   "id": "media_31AE7FBF_3E59_48AD_41B7_2C19B016B908",
+   "equirect": {
+    "url": "panos/media_31AE7FBF_3E59_48AD_41B7_2C19B016B908/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_31AE7FBF_3E59_48AD_41B7_2C19B016B908/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_31AE7FBF_3E59_48AD_41B7_2C19B016B908/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      -0.761483503,
+      -0.008980466,
+      0.648122076
+     ],
+     [
+      -0.648119106,
+      0.024729464,
+      -0.761137359
+     ],
+     [
+      -0.009192344,
+      -0.999653843,
+      -0.024651491
+     ]
+    ],
+    "t_W": [
+     38.0607,
+     -1.4482,
+     1.4666
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    0.9336,
+    0.9787,
+    0.8613
+   ],
+   "label": {
+    "de": "MRK-Nietprozess",
+    "en": "HRC riveting"
+   },
+   "project": true,
+   "pose_quality": "high",
+   "sigma": {
+    "pos_m": 0.204,
+    "rot_deg": 0.788
+   }
+  },
+  {
+   "id": "media_36C9969B_25F9_872D_41B6_0244612E3390",
+   "equirect": {
+    "url": "panos/media_36C9969B_25F9_872D_41B6_0244612E3390/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_36C9969B_25F9_872D_41B6_0244612E3390/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_36C9969B_25F9_872D_41B6_0244612E3390/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      -0.996860279,
+      0.009767666,
+      0.078575925
+     ],
+     [
+      -0.078410007,
+      0.016345137,
+      -0.996787193
+     ],
+     [
+      -0.011020618,
+      -0.999818698,
+      -0.015527935
+     ]
+    ],
+    "t_W": [
+     28.5539,
+     -7.068,
+     1.5327
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    0.885,
+    0.8693,
+    0.895
+   ],
+   "label": {
+    "de": "Mei – Assembly-Picking",
+    "en": "Mei – assembly picking"
+   },
+   "project": true,
+   "pose_quality": "high",
+   "sigma": {
+    "pos_m": 0.207,
+    "rot_deg": 0.5
+   }
+  },
+  {
+   "id": "media_9D1E5522_9158_699E_41DD_93C853F3CE33",
+   "equirect": {
+    "url": "panos/media_9D1E5522_9158_699E_41DD_93C853F3CE33/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_9D1E5522_9158_699E_41DD_93C853F3CE33/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_9D1E5522_9158_699E_41DD_93C853F3CE33/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      -0.400477208,
+      -0.041112567,
+      0.915383943
+     ],
+     [
+      -0.915170592,
+      -0.031785807,
+      -0.401811462
+     ],
+     [
+      0.045615718,
+      -0.998648797,
+      -0.024895521
+     ]
+    ],
+    "t_W": [
+     21.9696,
+     -3.0038,
+     1.4999
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    0.709,
+    0.7324,
+    0.8381
+   ],
+   "label": {
+    "de": "Sensitive Robotik",
+    "en": "Sensitive robotics"
+   },
+   "project": false,
+   "pose_quality": "medium",
+   "sigma": {
+    "pos_m": 0.4,
+    "rot_deg": 0.5
+   }
+  },
+  {
+   "id": "media_26E4C5CA_287D_9D7B_41A1_7DE8FBDA7B45",
+   "equirect": {
+    "url": "panos/media_26E4C5CA_287D_9D7B_41A1_7DE8FBDA7B45/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_26E4C5CA_287D_9D7B_41A1_7DE8FBDA7B45/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_26E4C5CA_287D_9D7B_41A1_7DE8FBDA7B45/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      0.284286329,
+      0.018436963,
+      -0.958562132
+     ],
+     [
+      0.958589192,
+      -0.023165077,
+      0.283848798
+     ],
+     [
+      -0.016971856,
+      -0.999561633,
+      -0.024258988
+     ]
+    ],
+    "t_W": [
+     41.6543,
+     2.6571,
+     1.4511
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    1.144,
+    1.1569,
+    1.1743
+   ],
+   "label": {
+    "de": "Teilautomatisierte Station (H2)",
+    "en": "Semi-automated station (H2)"
+   },
+   "project": true,
+   "pose_quality": "high",
+   "sigma": {
+    "pos_m": 0.2,
+    "rot_deg": 0.5
+   }
+  },
+  {
+   "id": "media_98546404_1FF7_3A44_419A_C578815F6BD0",
+   "equirect": {
+    "url": "panos/media_98546404_1FF7_3A44_419A_C578815F6BD0/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_98546404_1FF7_3A44_419A_C578815F6BD0/equirect_1024.jpg",
+    "width": 1024
+   },
+   "depth": {
+    "url": "panos/media_98546404_1FF7_3A44_419A_C578815F6BD0/depth_2048.png",
+    "encoding": "rg16_be",
+    "scale_m": 100.0,
+    "width": 2048
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      -0.956920546,
+      0.01556582,
+      -0.28993236
+     ],
+     [
+      0.290116379,
+      0.01121821,
+      -0.956925618
+     ],
+     [
+      -0.01164281,
+      -0.999815912,
+      -0.015250835
+     ]
+    ],
+    "t_W": [
+     39.7069,
+     9.5459,
+     1.4348
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "gain": [
+    1.2759,
+    1.2942,
+    1.2937
+   ],
+   "label": {
+    "de": "Vormontagestation (H2)",
+    "en": "Pre-assembly station (H2)"
+   },
+   "project": false,
+   "pose_quality": "medium",
+   "sigma": {
+    "pos_m": 0.35,
+    "rot_deg": 0.7
+   }
+  },
+  {
+   "id": "media_2F42B601_3E7F_3B55_41B5_20DE1DEE9225",
+   "label": {
+    "de": "Flexible Montage (MRK)",
+    "en": "Flexible assembly (HRC)"
+   },
+   "equirect": {
+    "url": "panos/media_2F42B601_3E7F_3B55_41B5_20DE1DEE9225/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_2F42B601_3E7F_3B55_41B5_20DE1DEE9225/equirect_1024.jpg",
+    "width": 1024
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      -1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      -1.0,
+      0.0
+     ]
+    ],
+    "t_W": [
+     23.225,
+     -1.425,
+     1.45
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "project": false,
+   "photo_only": true,
+   "pose_quality": "approx",
+   "note": "not registered (pose-fix): position from the hub bearing +-1..3 m, heading unknown; shown as photo only"
+  },
+  {
+   "id": "media_9D17C756_9158_29A6_41DE_DD4B8BE3C90C",
+   "label": {
+    "de": "Ergonomie Unterbodenmontage",
+    "en": "Ergonomic underbody assembly"
+   },
+   "equirect": {
+    "url": "panos/media_9D17C756_9158_29A6_41DE_DD4B8BE3C90C/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_9D17C756_9158_29A6_41DE_DD4B8BE3C90C/equirect_1024.jpg",
+    "width": 1024
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      -1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      -1.0,
+      0.0
+     ]
+    ],
+    "t_W": [
+     18.399,
+     -21.018,
+     1.45
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "project": false,
+   "photo_only": true,
+   "pose_quality": "approx",
+   "note": "not registered (pose-fix): position from the hub bearing +-1..3 m, heading unknown; shown as photo only"
+  },
+  {
+   "id": "media_2E94DA9D_3E6F_4B6C_41A6_B75E8F7E220F",
+   "label": {
+    "de": "MRK in der Industrie 4.0",
+    "en": "HRC in Industry 4.0"
+   },
+   "equirect": {
+    "url": "panos/media_2E94DA9D_3E6F_4B6C_41A6_B75E8F7E220F/equirect_4096.jpg",
+    "width": 4096
+   },
+   "equirect_lowres": {
+    "url": "panos/media_2E94DA9D_3E6F_4B6C_41A6_B75E8F7E220F/equirect_1024.jpg",
+    "width": 1024
+   },
+   "pose_W": {
+    "R_W_cam": [
+     [
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      -1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      -1.0,
+      0.0
+     ]
+    ],
+    "t_W": [
+     11.785,
+     0.362,
+     1.45
+    ],
+    "cam_convention": "x_right_y_down_z_forward"
+   },
+   "project": false,
+   "photo_only": true,
+   "pose_quality": "approx",
+   "note": "not registered (pose-fix): position from the hub bearing +-1..3 m, heading unknown; shown as photo only"
+  }
+ ],
+ "stations": {
+  "url": "stations.json"
+ },
+ "robot": {
+  "url": "robot_g1.glb",
+  "pose_W": {
+   "t_W": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "yaw_deg": 0.0
+  },
+  "label": "Unitree G1",
+  "collide": true,
+  "note": "Unitree G1 in the Isaac main-stage standing stance at poses_v2/g1_spot_W.json (root [6.477258001540674, -9.761497604038714, 0.0], yaw 0.0 deg), posed in W; geom_export.py robot",
+  "station_id": "g1_unitree"
+ },
+ "remove_W": [
+  {
+   "id": "green_tool_cabinet",
+   "center_W": [
+    6.4773,
+    -9.7615,
+    0.55
+   ],
+   "size_W": [
+    0.58,
+    0.8,
+    1.12
+   ],
+   "yaw_deg": -4.59470369920507
+  }
+ ],
+ "credits": {
+  "de": "Fotos, Texte und Panoramen: © ZeMA gGmbH (virtueller Rundgang), alle Rechte vorbehalten. Unitree-G1-Modell: Unitree Robotics (BSD-3-Clause). three.js (MIT), three-mesh-bvh (MIT), Basis Universal (Apache-2.0), zstd (BSD-3-Clause); Lizenztexte in vendor/LICENSES/.",
+  "en": "Photos, texts and panoramas: © ZeMA gGmbH (virtual tour), all rights reserved. Unitree G1 model: Unitree Robotics (BSD-3-Clause). three.js (MIT), three-mesh-bvh (MIT), Basis Universal (Apache-2.0), zstd (BSD-3-Clause); full licence texts in vendor/LICENSES/."
+ }
+}

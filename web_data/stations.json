@@ -1,0 +1,2420 @@
+{
+ "schema": "claude_rundgang.stations.v1",
+ "source": "catalogue/stations.json placed by rundgang/web_build.py",
+ "groups": {
+  "station": {
+   "de": "Stationen",
+   "en": "Stations"
+  },
+  "robot": {
+   "de": "Neu im Zwilling",
+   "en": "New in the twin"
+  },
+  "info": {
+   "de": "Infopunkte",
+   "en": "Info points"
+  }
+ },
+ "bearing_fixes": {
+  "mei_o03": {
+   "yaw_range": [
+    22.0,
+    88.0
+   ],
+   "yaw": 55.0,
+   "pitch_range": [
+    -5.0,
+    -50.0
+   ],
+   "pitch": -27.5,
+   "why": "critic 3a: desk was ~30-40 deg off; re-read 22..88 (catalogue -75..90 merged it with the black table)"
+  },
+  "dem_o06": {
+   "yaw_range": [
+    -88.0,
+    -81.0
+   ],
+   "yaw": -84.5,
+   "why": "critic 3a: column was ~15 deg off; re-read -88..-81 (catalogue -100..-95)"
+  }
+ },
+ "stations": [
+  {
+   "id": "st_ki_inspektion_vader",
+   "kind": "station",
+   "group": "station",
+   "category": "robot_cell",
+   "hall": "Halle 10",
+   "title": {
+    "de": "KI-gestützte Inspektion zerspanter Bauteile – ABB Computer Vision (KI) – VADER",
+    "en": "AI-assisted inspection of machined parts – ABB computer vision (VADER)"
+   },
+   "short": {
+    "de": "KI-Inspektion (VADER)",
+    "en": "AI inspection (VADER)"
+   },
+   "description": {
+    "de": "Die manuelle Sichtprüfung von Komponenten einer NKW-Kupplung soll mittels eines flexiblen Robotersystems automatisiert werden. Die gezeigte Lösung beinhaltet eine KI-gestützte Fehlererkennung, welche mit synthetischen Bilddaten trainiert wurde.",
+    "en": "Manual visual inspection of truck clutch components is to be automated by a flexible robot system; the solution includes AI-based defect detection trained on synthetic image data."
+   },
+   "description_source": "album_B25B0B19_A7CB_4C26_41DC_BBAA34715167 (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_B25B0B19_A7CB_4C26_41DC_BBAA34715167_0.jpg",
+     "caption": {
+      "de": "KI-gestützte Inspektion zerspanter Bauteile",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/popup_B361B144_A7D9_5C2F_41D5_84ED3DB4B3A7_de_0_0.jpg",
+     "caption": {
+      "de": "Infotafel (Popup im Rundgang)",
+      "en": "Info board (tour popup)"
+     }
+    }
+   ],
+   "position_W": [
+    8.968,
+    -9.848,
+    1.063
+   ],
+   "radius": 2.52,
+   "stand_W": [
+    8.199,
+    -8.309,
+    0.0
+   ],
+   "look_at_W": [
+    8.968,
+    -9.848,
+    0.963
+   ],
+   "pano_id": "media_9D15058B_1FCD_1A4E_41BC_01F37658EB07",
+   "position_quality": "registered_pano",
+   "position_note": "own pano media_9D15058B_1FCD_1A4E_41BC_01F37658EB07 (high): bearing yaw 0 / pitch -15 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": false,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "vader_o01",
+     "name": {
+      "de": "Leichtbauroboter (ABB GoFa, weiß) auf Gerätewagen",
+      "en": "ABB GoFa cobot (white) on cabinet"
+     },
+     "type": "robot_arm",
+     "position_W": [
+      11.75,
+      -23.64,
+      0.6
+     ]
+    },
+    {
+     "id": "vader_o02",
+     "name": {
+      "de": "Grauer Unterbau-/Gerätewagen mit Prüfaufbau (Drehteller, Kupplungsteil)",
+      "en": "grey cabinet base with inspection fixture (turntable, clutch part)"
+     },
+     "type": "cabinet",
+     "position_W": [
+      8.94,
+      -10.21,
+      0.45
+     ]
+    },
+    {
+     "id": "vader_o03",
+     "name": {
+      "de": "Schaltschrank grau (hoch)",
+      "en": "tall grey control cabinet"
+     },
+     "type": "cabinet",
+     "position_W": [
+      9.7,
+      -9.55,
+      1.0
+     ]
+    },
+    {
+     "id": "vader_o04",
+     "name": {
+      "de": "Bedienplatz: geschwungener weißer Schreibtisch mit 2 Monitoren und PC",
+      "en": "operator desk (curved, white) with 2 monitors + PC tower"
+     },
+     "type": "desk",
+     "position_W": [
+      10.04,
+      -8.23,
+      0.38
+     ]
+    },
+    {
+     "id": "vader_o05",
+     "name": {
+      "de": "Großer Monitor an Traverse",
+      "en": "large monitor hung on truss"
+     },
+     "type": "screen",
+     "position_W": [
+      11.56,
+      -8.95,
+      0.33
+     ]
+    },
+    {
+     "id": "vader_o07",
+     "name": {
+      "de": "Einhausung mit dunkel getönten (grünen) Schutzscheiben in Alu-Profilrahmen",
+      "en": "enclosure with dark green-tinted protective panels in aluminium frame"
+     },
+     "type": "enclosure",
+     "position_W": [
+      5.05,
+      -8.63,
+      1.05
+     ]
+    },
+    {
+     "id": "vader_o08",
+     "name": {
+      "de": "Rollbarer Alu-Tisch mit Holzplatte (2 Ebenen), NKW-Kupplungsdruckplatte darauf",
+      "en": "aluminium-frame table on castors, plywood top, truck clutch pressure plate on top"
+     },
+     "type": "table",
+     "position_W": [
+      6.16,
+      -8.24,
+      0.45
+     ]
+    },
+    {
+     "id": "vader_o09",
+     "name": {
+      "de": "Kupplungsdruckplatte (Prüfteil)",
+      "en": "clutch pressure plate (inspected part)"
+     },
+     "type": "part",
+     "position_W": [
+      6.18,
+      -8.73,
+      0.05
+     ]
+    },
+    {
+     "id": "vader_o10",
+     "name": {
+      "de": "Anti-Ermüdungs-Bodenmatten gelb/grau (Klick-Fliesen)",
+      "en": "yellow/grey interlocking anti-fatigue floor tiles"
+     },
+     "type": "floor_mat",
+     "position_W": [
+      4.6,
+      -8.25,
+      0.01
+     ]
+    },
+    {
+     "id": "vader_o11",
+     "name": {
+      "de": "Bürostühle schwarz (2)",
+      "en": "black office chairs (2)"
+     },
+     "type": "chair",
+     "position_W": [
+      9.86,
+      -8.2,
+      0.55
+     ]
+    },
+    {
+     "id": "vader_o12",
+     "name": {
+      "de": "Traversenturm (Alu) mit Steckdosen",
+      "en": "aluminium truss tower"
+     },
+     "type": "truss",
+     "position_W": [
+      12.02,
+      -10.33,
+      2.0
+     ]
+    },
+    {
+     "id": "vader_o13",
+     "name": {
+      "de": "Interreg North-West Europe Poster an der Wand",
+      "en": "Interreg NWE poster on wall"
+     },
+     "type": "banner",
+     "position_W": [
+      8.21,
+      -23.51,
+      0.7
+     ]
+    },
+    {
+     "id": "vader_o14",
+     "name": {
+      "de": "Hintergrund: Unterbodenmontage (gelber Hänger mit blauem BMW, blaues Portal)",
+      "en": "background: underbody assembly line (yellow hanger, blue BMW, blue gantry)"
+     },
+     "type": "vehicle_line",
+     "position_W": [
+      5.85,
+      -14.76,
+      1.33
+     ]
+    },
+    {
+     "id": "vader_o15",
+     "name": {
+      "de": "Hintergrund: silberne SUV-Karosserie",
+      "en": "background: silver SUV body"
+     },
+     "type": "vehicle",
+     "position_W": [
+      11.86,
+      -6.24,
+      0.8
+     ]
+    },
+    {
+     "id": "vader_o16",
+     "name": {
+      "de": "Hintergrund: Reifen-/Radmontagetische und blaue Portalstütze",
+      "en": "background: wheel tables, blue gantry column"
+     },
+     "type": "table",
+     "position_W": [
+      5.67,
+      -4.9,
+      1.01
+     ]
+    }
+   ]
+  },
+  {
+   "id": "g1_unitree",
+   "kind": "robot",
+   "group": "robot",
+   "category": "robot",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Unitree G1 mit Dex3-Händen – neu, nicht im virtuellen Rundgang",
+    "en": "Unitree G1 with Dex3 hands – new, not in the virtual tour"
+   },
+   "short": {
+    "de": "Unitree G1 (neu)",
+    "en": "Unitree G1 (new)"
+   },
+   "description": {
+    "de": "Der humanoide Roboter Unitree G1 (rund 1,3 m groß, 29 Gelenke) mit zwei dreifingrigen Dex3-1-Händen ist neu im Team und deshalb im virtuellen Rundgang noch nicht zu sehen. Im digitalen Zwilling steht er an der Station „KI-gestützte Inspektion zerspanter Bauteile“ – genau dort, wo im Rundgang der grüne Werkzeugwagen steht. Der Wagen ist im Zwilling entfernt (Geometrie und Fotos).\n\nDas Modell stammt aus der offenen Unitree-Robotikbeschreibung (MJCF, BSD-3-Clause); die Gelenkstellung ist eine neutrale Standhaltung, dieselbe wie im Isaac-Sim-Zwilling und im Vergleichsvideo. Im Panorama-Modus (P) wird der G1 in das echte Foto eingeblendet.\n\nPosition: aus der Pose des VADER-Panoramas und der Lage des Werkzeugwagens, Unsicherheit etwa ±0,2 m.",
+    "en": "The Unitree G1 humanoid (about 1.3 m tall, 29 joints) with two three-finger Dex3-1 hands is new on the team and therefore not yet in the virtual tour. In the digital twin it stands at the station \"AI-assisted inspection of machined parts\", exactly where the green tool cabinet stands in the tour. The cabinet is removed from the twin (geometry and photos).\n\nThe model comes from Unitree's open robot description (MJCF, BSD-3-Clause); the joint angles are a neutral standing stance, the same as in the Isaac Sim twin and the comparison video. In panorama mode (P) the G1 is composited into the real photo.\n\nPosition: from the VADER pano pose and the cabinet's location, uncertainty about ±0.2 m."
+   },
+   "description_source": "written for the twin (not from the tour)",
+   "description_generated": true,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/g1_in_vader_photo.jpg",
+     "caption": {
+      "de": "Der G1 im Zwilling, eingeblendet in das echte 360°-Foto der Station (Panorama-Modus). Der grüne Werkzeugwagen ist entfernt.",
+      "en": "The G1 in the twin, composited into the station's real 360° photo (panorama mode). The green tool cabinet is removed."
+     }
+    }
+   ],
+   "position_W": [
+    6.477,
+    -9.761,
+    1.45
+   ],
+   "radius": 2.2,
+   "stand_W": [
+    7.775,
+    -9.725,
+    0.0
+   ],
+   "look_at_W": [
+    6.477,
+    -9.761,
+    0.9
+   ],
+   "pano_id": "media_9D15058B_1FCD_1A4E_41BC_01F37658EB07",
+   "position_quality": "g1_spot",
+   "position_note": "poses_v2/g1_spot_W.json g1_root_W (sigma 0.22 m), yaw 0.0 deg",
+   "approx": false,
+   "marker_color": "#c48cff",
+   "new": true
+  },
+  {
+   "id": "st_llm_demonstrator",
+   "kind": "station",
+   "group": "station",
+   "category": "cobot_demo",
+   "hall": "Halle 10",
+   "title": {
+    "de": "LLM Demonstrator – Mensch-Roboter-Interaktion mit natürlicher Sprache",
+    "en": "LLM demonstrator – human-robot interaction with natural language"
+   },
+   "short": {
+    "de": "LLM-Demonstrator",
+    "en": "LLM demonstrator"
+   },
+   "description": {
+    "de": "Der Demonstrator führt auf Basis einer Spracheingabe über ein Mikrofon eine Pick-And-Place Aufgabe aus, indem er die Objekte auf dem Tisch detektiert, das vom Anwender vorgegebene Objekt greift und wie gewünscht platziert.",
+    "en": "Based on speech input through a microphone the demonstrator performs a pick-and-place task: it detects the objects on the table, grasps the object named by the user and places it as requested."
+   },
+   "description_source": "album_B08D2D57_A7B9_E20F_41DF_E61244C57874 (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_B08D2D57_A7B9_E20F_41DF_E61244C57874_0.jpg",
+     "caption": {
+      "de": "Mensch-Roboter-Interaktion",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_B08D2D57_A7B9_E20F_41DF_E61244C57874_1.jpg",
+     "caption": {
+      "de": "Mensch-Roboter-Interaktion",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_B08D2D57_A7B9_E20F_41DF_E61244C57874_2.jpg",
+     "caption": {
+      "de": "Mensch-Roboter-Interaktion",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    10.994,
+    -1.592,
+    1.312
+   ],
+   "radius": 2.5,
+   "stand_W": [
+    11.388,
+    -0.279,
+    0.0
+   ],
+   "look_at_W": [
+    10.994,
+    -1.592,
+    1.212
+   ],
+   "pano_id": "media_951E34E0_1FD5_1BF8_41A9_EEFC93315F6A",
+   "position_quality": "registered_pano",
+   "position_note": "own pano media_951E34E0_1FD5_1BF8_41A9_EEFC93315F6A (high): bearing yaw -15 / pitch -20 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": false,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "llm_o01",
+     "name": {
+      "de": "EDIH-Saarland-Theke (Alu-Rahmen, blau bedruckt) mit UR-Cobot und Würfeln",
+      "en": "EDIH Saarland counter (aluminium frame, blue print) with UR cobot and coloured cubes"
+     },
+     "type": "counter",
+     "position_W": [
+      10.87,
+      -2.03,
+      0.47
+     ]
+    },
+    {
+     "id": "llm_o02",
+     "name": {
+      "de": "UR-Cobot (UR3/UR5e)",
+      "en": "UR cobot"
+     },
+     "type": "robot_arm",
+     "position_W": [
+      11.35,
+      -1.72,
+      0.4
+     ]
+    },
+    {
+     "id": "llm_o03",
+     "name": {
+      "de": "Schreibtisch mit Monitor und PC",
+      "en": "desk with monitor and PC"
+     },
+     "type": "desk",
+     "position_W": [
+      13.03,
+      -2.35,
+      0.38
+     ]
+    },
+    {
+     "id": "llm_o04",
+     "name": {
+      "de": "Bürostuhl",
+      "en": "office chair"
+     },
+     "type": "chair",
+     "position_W": [
+      13.52,
+      -1.87,
+      0.55
+     ]
+    },
+    {
+     "id": "llm_o05",
+     "name": {
+      "de": "Grauer Traversen-/Stahlpfosten",
+      "en": "grey truss post"
+     },
+     "type": "truss",
+     "position_W": [
+      11.95,
+      -2.06,
+      2.0
+     ]
+    },
+    {
+     "id": "llm_o06",
+     "name": {
+      "de": "Hallenstütze (Stahl, grau) mit Feuerlöscher",
+      "en": "steel hall column with fire extinguisher"
+     },
+     "type": "column",
+     "position_W": [
+      13.42,
+      1.13,
+      4.5
+     ]
+    },
+    {
+     "id": "llm_o07",
+     "name": {
+      "de": "Großes schwarzes Display/Monolith (DFKI)",
+      "en": "large black display monolith (DFKI)"
+     },
+     "type": "screen",
+     "position_W": [
+      10.42,
+      1.23,
+      1.25
+     ]
+    },
+    {
+     "id": "llm_o08",
+     "name": {
+      "de": "Absperrpfosten mit roten Gurten entlang Gang",
+      "en": "stanchions with red belts along aisle"
+     },
+     "type": "barrier",
+     "position_W": [
+      9.95,
+      -0.27,
+      0.5
+     ]
+    },
+    {
+     "id": "llm_o09",
+     "name": {
+      "de": "EDIH- und DFKI-Beachflags",
+      "en": "EDIH and DFKI beach flags"
+     },
+     "type": "flag",
+     "position_W": [
+      9.77,
+      -1.72,
+      1.5
+     ]
+    },
+    {
+     "id": "llm_o10",
+     "name": {
+      "de": "Gelbe Gangmarkierung (2 Linien), Gangachse ~ -125/+55 deg",
+      "en": "yellow aisle lines (aisle axis ~-125/+55 deg)"
+     },
+     "type": "floor_marking",
+     "position_W": [
+      10.89,
+      -1.47,
+      0.71
+     ]
+    }
+   ]
+  },
+  {
+   "id": "st_mri_ur10",
+   "kind": "station",
+   "group": "station",
+   "category": "cobot_demo",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Sprachgesteuerter UR10-Roboter – Mensch-Roboter-Interaktion mit natürlicher Sprache",
+    "en": "Speech-controlled UR10 robot – human-robot interaction with natural language"
+   },
+   "short": {
+    "de": "UR10 mit Sprachsteuerung",
+    "en": "UR10 with speech control"
+   },
+   "description": {
+    "de": "Der Demonstrator führt auf Basis einer Spracheingabe über ein Mikrofon eine Pick-And-Place Aufgabe aus, indem er die Objekte auf dem Tisch detektiert, das vom Anwender vorgegebene Objekt greift und wie gewünscht platziert.",
+    "en": "Based on speech input through a microphone the demonstrator performs a pick-and-place task: it detects the objects on the table, grasps the object named by the user and places it as requested."
+   },
+   "description_source": "album_B195DA4D_A7B9_6600_41D3_D699659C1304 (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_B195DA4D_A7B9_6600_41D3_D699659C1304_0.jpg",
+     "caption": {
+      "de": "Mensch-Roboter-Interaktion",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_B195DA4D_A7B9_6600_41D3_D699659C1304_1.jpg",
+     "caption": {
+      "de": "Mensch-Roboter-Interaktion",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_B195DA4D_A7B9_6600_41D3_D699659C1304_2.jpg",
+     "caption": {
+      "de": "Mensch-Roboter-Interaktion",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    22.946,
+    -8.64,
+    0.971
+   ],
+   "radius": 2.5,
+   "stand_W": [
+    21.528,
+    -9.209,
+    0.0
+   ],
+   "look_at_W": [
+    22.946,
+    -8.64,
+    0.871
+   ],
+   "pano_id": "media_95583947_1FF5_6AC5_41A9_79BC9AD0D8A7",
+   "position_quality": "registered_pano",
+   "position_note": "own pano media_95583947_1FF5_6AC5_41A9_79BC9AD0D8A7 (high): bearing yaw 35 / pitch -20 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": false,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "ur10_o01",
+     "name": {
+      "de": "Theke mit grauem Unterbau und Lochrasterplatte (Stahl) + UR10",
+      "en": "counter, grey base, perforated steel top + UR10"
+     },
+     "type": "counter",
+     "position_W": [
+      23.21,
+      -8.67,
+      0.45
+     ]
+    },
+    {
+     "id": "ur10_o02",
+     "name": {
+      "de": "UR10-Cobot",
+      "en": "UR10 cobot"
+     },
+     "type": "robot_arm",
+     "position_W": [
+      23.75,
+      -8.04,
+      0.65
+     ]
+    },
+    {
+     "id": "ur10_o03",
+     "name": {
+      "de": "Geschwungener weißer Schreibtisch mit 2 Monitoren, PC, Lautsprecher",
+      "en": "curved white desk with 2 monitors"
+     },
+     "type": "desk",
+     "position_W": [
+      20.1,
+      -8.54,
+      0.38
+     ]
+    },
+    {
+     "id": "ur10_o04",
+     "name": {
+      "de": "Traversenturm mit blauem Stromverteiler",
+      "en": "truss tower with blue power distributor"
+     },
+     "type": "truss",
+     "position_W": [
+      20.04,
+      -9.96,
+      2.0
+     ]
+    },
+    {
+     "id": "ur10_o05",
+     "name": {
+      "de": "Hallenstütze C/6 (Stahl, grau)",
+      "en": "steel hall column 'C/6'"
+     },
+     "type": "column",
+     "position_W": [
+      25.03,
+      -11.15,
+      4.5
+     ]
+    },
+    {
+     "id": "ur10_o06",
+     "name": {
+      "de": "Schaltschrank mit HMI",
+      "en": "control cabinet with HMI"
+     },
+     "type": "cabinet",
+     "position_W": [
+      24.71,
+      -11.22,
+      0.9
+     ]
+    },
+    {
+     "id": "ur10_o07",
+     "name": {
+      "de": "Graue Schränke (Rückwand Mittelstand-Stand, 'Grundschutz')",
+      "en": "grey cabinets (back of Mittelstand booth)"
+     },
+     "type": "cabinet",
+     "position_W": [
+      19.87,
+      -11.58,
+      0.95
+     ]
+    },
+    {
+     "id": "ur10_o08",
+     "name": {
+      "de": "Kabelkanal am Boden (verzinkt)",
+      "en": "galvanised floor cable duct"
+     },
+     "type": "floor_marking",
+     "position_W": [
+      20.28,
+      -12.26,
+      0.03
+     ]
+    }
+   ]
+  },
+  {
+   "id": "st_mei_assembly_picking",
+   "kind": "station",
+   "group": "station",
+   "category": "cobot_demo",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Mei – Assembly-Picking Demo (CAD-gesteuerte, autonome Roboter-Montage)",
+    "en": "Mei – assembly-picking demo (CAD-driven autonomous robot assembly)"
+   },
+   "short": {
+    "de": "Mei – Assembly-Picking",
+    "en": "Mei – assembly picking"
+   },
+   "description": {
+    "de": "Der Demonstrator zeigt eine durchgängige CAD-gesteuerte Montagekette: Zunächst wird aus einem CAD-Modell eine Montagesequenz abgeleitet. Ein 3D-Kamerasystem identifiziert und lokalisiert anschließend die benötigten Bauteile in einer ungeordneten Kiste, sodass ein Roboter die kollisionsfreie Montage ausführen kann. Durch die Digital Twin validierte Trajektorie überbrückt das System die Kluft zwischen digitaler Planung und realer Roboterausführung.",
+    "en": "An end-to-end CAD-driven assembly chain: an assembly sequence is derived from a CAD model, a 3D camera identifies and locates the parts in an unordered bin, and a robot performs the collision-free assembly; a digital-twin-validated trajectory bridges digital planning and real robot execution."
+   },
+   "description_source": "album_D1F1C33E_C426_4B0F_41D8_1F6146BF054B (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_D1F1C33E_C426_4B0F_41D8_1F6146BF054B_0.jpg",
+     "caption": {
+      "de": "Assembly-Picking Demo",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_D1F1C33E_C426_4B0F_41D8_1F6146BF054B_1.jpg",
+     "caption": {
+      "de": "Assembly-Picking Demo",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_D1F1C33E_C426_4B0F_41D8_1F6146BF054B_2.jpg",
+     "caption": {
+      "de": "Assembly-Picking Demo",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_D1F1C33E_C426_4B0F_41D8_1F6146BF054B_3.jpg",
+     "caption": {
+      "de": "Assembly-Picking Demo",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_D1F1C33E_C426_4B0F_41D8_1F6146BF054B_4.jpg",
+     "caption": {
+      "de": "Assembly-Picking Demo",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_D1F1C33E_C426_4B0F_41D8_1F6146BF054B_5.jpg",
+     "caption": {
+      "de": "Assembly-Picking Demo",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    28.955,
+    -8.17,
+    1.066
+   ],
+   "radius": 2.5,
+   "stand_W": [
+    28.554,
+    -7.068,
+    0.0
+   ],
+   "look_at_W": [
+    28.955,
+    -8.17,
+    0.966
+   ],
+   "pano_id": "media_36C9969B_25F9_872D_41B6_0244612E3390",
+   "position_quality": "registered_pano",
+   "position_note": "own pano media_36C9969B_25F9_872D_41B6_0244612E3390 (high): bearing yaw -15 / pitch -25 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": false,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "mei_o01",
+     "name": {
+      "de": "Schwarzer Lochraster-Rundtisch (Schweißtisch) mit UR5e und Pickboxen",
+      "en": "black perforated round welding table with UR5e and picking boxes"
+     },
+     "type": "table",
+     "position_W": [
+      29.11,
+      -8.34,
+      0.45
+     ]
+    },
+    {
+     "id": "mei_o02",
+     "name": {
+      "de": "UR5e-Cobot",
+      "en": "UR5e cobot"
+     },
+     "type": "robot_arm",
+     "position_W": [
+      29.63,
+      -11.19,
+      0.45
+     ]
+    },
+    {
+     "id": "mei_o03",
+     "name": {
+      "de": "Weißer Schreibtisch mit PCs und Monitoren",
+      "en": "white desk with PCs and monitors"
+     },
+     "type": "desk",
+     "position_W": [
+      27.68,
+      -7.88,
+      0.38
+     ],
+     "bearing_fix": "critic 3a: desk was ~30-40 deg off; re-read 22..88 (catalogue -75..90 merged it with the black table)"
+    },
+    {
+     "id": "mei_o04",
+     "name": {
+      "de": "Grüner Schweißschutzvorhang",
+      "en": "green welding curtain screen"
+     },
+     "type": "screen",
+     "position_W": [
+      25.48,
+      -8.06,
+      0.95
+     ]
+    },
+    {
+     "id": "mei_o05",
+     "name": {
+      "de": "Graue Stahlspinde",
+      "en": "grey steel lockers"
+     },
+     "type": "cabinet",
+     "position_W": [
+      29.9,
+      -11.35,
+      0.95
+     ]
+    },
+    {
+     "id": "mei_o06",
+     "name": {
+      "de": "Zweiter UR-Cobot auf Holztisch (RICAIP)",
+      "en": "second UR cobot on wooden table (RICAIP)"
+     },
+     "type": "table",
+     "position_W": [
+      29.68,
+      -4.61,
+      0.45
+     ]
+    },
+    {
+     "id": "mei_o07",
+     "name": {
+      "de": "Lange geschwungene Bedientische mit Monitoren",
+      "en": "long curved operator desks with monitors"
+     },
+     "type": "desk",
+     "position_W": [
+      33.78,
+      -6.29,
+      0.38
+     ]
+    },
+    {
+     "id": "mei_o08",
+     "name": {
+      "de": "Bürostuhl",
+      "en": "office chair"
+     },
+     "type": "chair",
+     "position_W": [
+      26.37,
+      -7.55,
+      0.55
+     ]
+    },
+    {
+     "id": "mei_o09",
+     "name": {
+      "de": "Schwarzer Hartschalenkoffer",
+      "en": "black hard case"
+     },
+     "type": "misc",
+     "position_W": [
+      27.97,
+      -7.67,
+      0.2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "st_mrk_ricaip",
+   "kind": "station",
+   "group": "station",
+   "category": "cobot_demo",
+   "hall": "Halle 10",
+   "title": {
+    "de": "MRK (RICAIP) – Intentionserkennung in der MRK",
+    "en": "HRC (RICAIP) – intention recognition in human-robot collaboration"
+   },
+   "short": {
+    "de": "MRK (RICAIP)",
+    "en": "HRC (RICAIP)"
+   },
+   "description": {
+    "de": "Mensch-Roboter-Kollaborative Montage unter Verwendung von KI-Tools für die Umgebungswahrnehmung, die Erkennung menschlicher Absichten und die automatische Aufgabenplanung.",
+    "en": "Human-robot collaborative assembly using AI tools for environment perception, recognition of human intentions and automatic task planning."
+   },
+   "description_source": "album_B0678B98_A74A_A600_41E0_633F7BF9A901 (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_B0678B98_A74A_A600_41E0_633F7BF9A901_0.jpg",
+     "caption": {
+      "de": "Intentionserkennung",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_B0678B98_A74A_A600_41E0_633F7BF9A901_1.jpg",
+     "caption": {
+      "de": "Intentionserkennung",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_B0678B98_A74A_A600_41E0_633F7BF9A901_2.jpg",
+     "caption": {
+      "de": "Intentionserkennung",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_B0678B98_A74A_A600_41E0_633F7BF9A901_3.jpg",
+     "caption": {
+      "de": "Intentionserkennung",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    29.881,
+    -4.432,
+    0.9
+   ],
+   "radius": 2.5,
+   "stand_W": [
+    30.975,
+    -3.325,
+    0.0
+   ],
+   "look_at_W": [
+    29.881,
+    -4.432,
+    0.7
+   ],
+   "pano_id": "media_64DB003E_1FDD_1A4B_41BC_B1215C200E50",
+   "position_quality": "registered_pano",
+   "position_note": "own pano media_64DB003E_1FDD_1A4B_41BC_B1215C200E50 (high): bearing yaw 20 / pitch -25 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": false,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "ric_o01",
+     "name": {
+      "de": "Geschwungener Alu-Tisch mit Holzplatte (2 Ebenen, rollbar) mit UR5e, Schaumstoff-Trays",
+      "en": "curved aluminium table with wooden top (2 tiers, castors), UR5e, foam trays"
+     },
+     "type": "table",
+     "position_W": [
+      29.87,
+      -4.67,
+      0.45
+     ]
+    },
+    {
+     "id": "ric_o02",
+     "name": {
+      "de": "UR5e-Cobot",
+      "en": "UR5e cobot"
+     },
+     "type": "robot_arm",
+     "position_W": [
+      29.63,
+      -4.69,
+      0.45
+     ]
+    },
+    {
+     "id": "ric_o03",
+     "name": {
+      "de": "RICAIP Roll-up",
+      "en": "RICAIP roll-up banner"
+     },
+     "type": "banner",
+     "position_W": [
+      27.37,
+      -4.55,
+      1.0
+     ]
+    },
+    {
+     "id": "ric_o04",
+     "name": {
+      "de": "Whiteboard auf Ständer",
+      "en": "whiteboard on stand"
+     },
+     "type": "board",
+     "position_W": [
+      26.3,
+      -3.4,
+      0.9
+     ]
+    },
+    {
+     "id": "ric_o05",
+     "name": {
+      "de": "Weißer Schrank",
+      "en": "white cabinet"
+     },
+     "type": "cabinet",
+     "position_W": [
+      26.27,
+      -2.7,
+      0.55
+     ]
+    },
+    {
+     "id": "ric_o06",
+     "name": {
+      "de": "Traversenturm",
+      "en": "truss tower"
+     },
+     "type": "truss",
+     "position_W": [
+      28.03,
+      -2.03,
+      2.0
+     ]
+    },
+    {
+     "id": "ric_o07",
+     "name": {
+      "de": "Bedientische mit Monitoren und PCs (2 lange weiße Tische)",
+      "en": "operator desks with monitors (2 long white desks)"
+     },
+     "type": "desk",
+     "position_W": [
+      33.43,
+      -3.98,
+      0.38
+     ]
+    },
+    {
+     "id": "ric_o08",
+     "name": {
+      "de": "Stahlbühne/Podest mit Geländer über Traversen",
+      "en": "steel mezzanine platform with railing"
+     },
+     "type": "gallery",
+     "position_W": [
+      36.25,
+      -5.39,
+      1.5
+     ]
+    },
+    {
+     "id": "ric_o09",
+     "name": {
+      "de": "Interreg-Container-Stand (schwarz)",
+      "en": "Interreg container booth (black)"
+     },
+     "type": "container_booth",
+     "position_W": [
+      25.64,
+      2.06,
+      1.3
+     ]
+    },
+    {
+     "id": "ric_o10",
+     "name": {
+      "de": "Hallenstütze (Stahl, grau)",
+      "en": "steel hall column"
+     },
+     "type": "column",
+     "position_W": [
+      26.02,
+      1.13,
+      4.5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "st_mrk_nietprozess",
+   "kind": "station",
+   "group": "station",
+   "category": "robot_cell",
+   "hall": "Halle 10",
+   "title": {
+    "de": "MRK Nietprozess – MRK-Nietprozess in der Flugzeugsektionsmontage (FourByThree)",
+    "en": "HRC riveting – human-robot riveting in aircraft section assembly (FourByThree)"
+   },
+   "short": {
+    "de": "MRK-Nietprozess",
+    "en": "HRC riveting"
+   },
+   "description": {
+    "de": "In der Sektionsmontage von Flugzeugen wird eine hohe Anzahl von Nieten benötigt, um die Druckkalotte mit der Sektionstonne zu verbinden. Der Nietvorgang wird von zwei Werkern durchgeführt.",
+    "en": "Aircraft section assembly needs a large number of rivets to join the pressure bulkhead to the fuselage section; riveting is done by two workers."
+   },
+   "description_source": "album_90E48823_82E3_7CED_41A1_34435AB1E710 (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/photo_957FA262_82A0_8D49_41D8_4B36E69C0E0C.jpg",
+     "caption": {
+      "de": "MRK-Nietprozess in der Flugzeugsektionsmontage",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/photo_9A483775_829F_B34A_41DE_69FFDA9546FD.jpg",
+     "caption": {
+      "de": "MRK-Nietprozess in der Flugzeugsektionsmontage",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/photo_9B79AFE7_8360_9356_41D3_F98E1E83435C.jpg",
+     "caption": {
+      "de": "MRK-Nietprozess in der Flugzeugsektionsmontage",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    38.077,
+    -4.026,
+    1.276
+   ],
+   "radius": 3.38,
+   "stand_W": [
+    38.061,
+    -1.448,
+    0.0
+   ],
+   "look_at_W": [
+    38.077,
+    -4.026,
+    1.176
+   ],
+   "pano_id": "media_31AE7FBF_3E59_48AD_41B7_2C19B016B908",
+   "position_quality": "registered_pano",
+   "position_note": "own pano media_31AE7FBF_3E59_48AD_41B7_2C19B016B908 (high): bearing yaw 40 / pitch -5 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": false,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "niet_o01",
+     "name": {
+      "de": "Flugzeug-Rumpfsegment (gebogene Hautschale) in Alu-Profilrahmen auf achteckigem Drehtisch",
+      "en": "aircraft fuselage skin section in aluminium frame on octagonal turntable"
+     },
+     "type": "machine",
+     "position_W": [
+      37.6,
+      -5.5,
+      1.6
+     ]
+    },
+    {
+     "id": "niet_o02",
+     "name": {
+      "de": "ZeMA-Steuersäule mit Nietroboter",
+      "en": "ZeMA control pedestal with riveting robot"
+     },
+     "type": "robot_arm",
+     "position_W": [
+      38.13,
+      -4.26,
+      0.8
+     ]
+    },
+    {
+     "id": "niet_o03",
+     "name": {
+      "de": "FourByThree Faltdisplay (Szenario Schweißen / Robot Design / Szenario Nieten)",
+      "en": "FourByThree pop-up banner wall"
+     },
+     "type": "banner",
+     "position_W": [
+      40.66,
+      0.6,
+      1.15
+     ]
+    },
+    {
+     "id": "niet_o05",
+     "name": {
+      "de": "Hallenstütze D/5",
+      "en": "hall column 'D/5'"
+     },
+     "type": "column",
+     "position_W": [
+      38.08,
+      1.24,
+      4.5
+     ]
+    },
+    {
+     "id": "niet_o06",
+     "name": {
+      "de": "Elektro-Gabelhubwagen orange",
+      "en": "orange electric pallet stacker"
+     },
+     "type": "vehicle",
+     "position_W": [
+      32.44,
+      -4.16,
+      1.0
+     ]
+    },
+    {
+     "id": "niet_o07",
+     "name": {
+      "de": "KUKA KR Industrieroboter (orange) auf Schweißtisch",
+      "en": "orange KUKA KR robot on welding table"
+     },
+     "type": "robot_arm",
+     "position_W": [
+      41.91,
+      -2.85,
+      0.9
+     ]
+    },
+    {
+     "id": "niet_o08",
+     "name": {
+      "de": "Hängende Bildschirme",
+      "en": "hanging screens"
+     },
+     "type": "screen",
+     "position_W": [
+      37.43,
+      -4.13,
+      0.35
+     ]
+    },
+    {
+     "id": "niet_o09",
+     "name": {
+      "de": "Gelbe Kranbahn",
+      "en": "yellow crane runway beam"
+     },
+     "type": "crane",
+     "position_W": [
+      46.44,
+      -1.3,
+      6.72
+     ]
+    }
+   ]
+  },
+  {
+   "id": "st_demontage_brennstoffzellen",
+   "kind": "station",
+   "group": "station",
+   "category": "cobot_demo",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Demontage von Brennstoffzellenstacks – H2OptiLifeCycle",
+    "en": "Disassembly of fuel cell stacks – H2OptiLifeCycle"
+   },
+   "short": {
+    "de": "Demontage Brennstoffzellen",
+    "en": "Fuel-cell disassembly"
+   },
+   "description": {
+    "de": "Berücksichtigung eines hohen Maßes an Flexibilität und Wandlungsfähigkeit, um zukünftigen Produktänderungen gerecht zu werden und die Übertragbarkeit auf verwandte Produkte zu gewährleisten.",
+    "en": "High flexibility and changeability so that future product changes can be handled and the approach transfers to related products."
+   },
+   "description_source": "album_C780B6A3_DFD5_ABBF_41E9_BAF4E0E67A24 (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_C780B6A3_DFD5_ABBF_41E9_BAF4E0E67A24_0.jpg",
+     "caption": {
+      "de": "Demontage von Wasserstoff-Brennstoffzellen",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_C780B6A3_DFD5_ABBF_41E9_BAF4E0E67A24_1.jpg",
+     "caption": {
+      "de": "Demontage von Wasserstoff-Brennstoffzellen",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    29.622,
+    2.155,
+    1.14
+   ],
+   "radius": 2.5,
+   "stand_W": [
+    30.275,
+    1.275,
+    0.0
+   ],
+   "look_at_W": [
+    29.622,
+    2.155,
+    1.04
+   ],
+   "pano_id": "media_679879BB_1FD3_2A4B_41B4_29648D6F807A",
+   "position_quality": "registered_pano",
+   "position_note": "own pano media_679879BB_1FD3_2A4B_41B4_29648D6F807A (high): bearing yaw -30 / pitch -30 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": false,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "dem_o01",
+     "name": {
+      "de": "Lochraster-Schweißtisch (rostbraune Platte, gelbe Beine)",
+      "en": "perforated welding table (rust-brown top, yellow legs)"
+     },
+     "type": "table",
+     "position_W": [
+      29.28,
+      2.18,
+      0.45
+     ]
+    },
+    {
+     "id": "dem_o02",
+     "name": {
+      "de": "UR-Cobot (UR5e) auf Tisch",
+      "en": "UR5e cobot on table"
+     },
+     "type": "robot_arm",
+     "position_W": [
+      28.45,
+      2.14,
+      0.45
+     ]
+    },
+    {
+     "id": "dem_o03",
+     "name": {
+      "de": "Interreg Großregion RoboPlus Bannerwand",
+      "en": "Interreg Greater Region RoboPlus banner wall"
+     },
+     "type": "banner",
+     "position_W": [
+      28.3,
+      3.68,
+      1.25
+     ]
+    },
+    {
+     "id": "dem_o04",
+     "name": {
+      "de": "Schwarzer Displayständer mit Monitor",
+      "en": "black display stand with monitor"
+     },
+     "type": "screen",
+     "position_W": [
+      26.4,
+      2.18,
+      1.0
+     ]
+    },
+    {
+     "id": "dem_o05",
+     "name": {
+      "de": "Touch-Kiosk",
+      "en": "touch kiosk"
+     },
+     "type": "kiosk",
+     "position_W": [
+      27.44,
+      1.43,
+      0.6
+     ]
+    },
+    {
+     "id": "dem_o06",
+     "name": {
+      "de": "Hallenstütze (Stahl)",
+      "en": "steel hall column"
+     },
+     "type": "column",
+     "position_W": [
+      29.15,
+      1.49,
+      4.5
+     ],
+     "bearing_fix": "critic 3a: column was ~15 deg off; re-read -88..-81 (catalogue -100..-95)"
+    },
+    {
+     "id": "dem_o07",
+     "name": {
+      "de": "Flugzeug-Rumpfschale (CFK, braune Spanten) – Hintergrund",
+      "en": "aircraft fuselage shell (CFRP ribs) – background"
+     },
+     "type": "machine",
+     "position_W": [
+      30.37,
+      10.41,
+      1.5
+     ]
+    },
+    {
+     "id": "dem_o08",
+     "name": {
+      "de": "Gelbe Kranbahn, Stirnwand weiß mit Rohren",
+      "en": "yellow crane runway, white end wall with pipes"
+     },
+     "type": "crane",
+     "position_W": [
+      31.89,
+      3.32,
+      2.38
+     ]
+    }
+   ]
+  },
+  {
+   "id": "st_teilautomatisierte_station_h2",
+   "kind": "station",
+   "group": "station",
+   "category": "robot_cell",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Teilautomatisierte Station – H2SkaProMo (Teilautomatisiertes Stapeln von Brennstoffzellen-Stacks)",
+    "en": "Semi-automated station – H2SkaProMo (semi-automated stacking of fuel cell stacks)"
+   },
+   "short": {
+    "de": "Teilautomatisierte Station (H2)",
+    "en": "Semi-automated station (H2)"
+   },
+   "description": {
+    "de": "Der Demonstrator bildet einen teilautomatisierten Stapelprozess für Brennstoffzellen-Stacks ab, bei dem Bipolarplatten und MEAs zunächst vereinzelt, anschließend positioniert und abschließend sequenziell zum Gesamtstack aufgebaut werden.",
+    "en": "The demonstrator shows a semi-automated stacking process for fuel cell stacks: bipolar plates and MEAs are separated, positioned and then stacked sequentially into the complete stack."
+   },
+   "description_source": "popup_FFB2226A_EDB6_A671_41C9_493294AB26BB (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/popup_FFB2226A_EDB6_A671_41C9_493294AB26BB_de_0_0.jpg",
+     "caption": {
+      "de": "Infotafel (Popup im Rundgang)",
+      "en": "Info board (tour popup)"
+     }
+    }
+   ],
+   "position_W": [
+    42.214,
+    4.374,
+    1.364
+   ],
+   "radius": 2.61,
+   "stand_W": [
+    41.654,
+    2.657,
+    0.0
+   ],
+   "look_at_W": [
+    42.214,
+    4.374,
+    1.264
+   ],
+   "pano_id": "media_26E4C5CA_287D_9D7B_41A1_7DE8FBDA7B45",
+   "position_quality": "registered_pano",
+   "position_note": "own pano media_26E4C5CA_287D_9D7B_41A1_7DE8FBDA7B45 (high): bearing yaw 90 / pitch -5 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": false,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "h2t_o01",
+     "name": {
+      "de": "Xenon-Automationszelle 1 (rund, Glas/Alu, grauer Unterbau)",
+      "en": "Xenon automation cell 1 (round, glass/aluminium, grey base)"
+     },
+     "type": "robot_cell",
+     "position_W": [
+      44.28,
+      2.52,
+      1.3
+     ]
+    },
+    {
+     "id": "h2t_o02",
+     "name": {
+      "de": "Xenon-Automationszelle 2",
+      "en": "Xenon automation cell 2"
+     },
+     "type": "robot_cell",
+     "position_W": [
+      44.35,
+      5.99,
+      1.3
+     ]
+    },
+    {
+     "id": "h2t_o03",
+     "name": {
+      "de": "Zentrale Glas/Alu-Turmzelle mit grauem Schaltschrank",
+      "en": "central glass/aluminium tower cell with grey control cabinet"
+     },
+     "type": "robot_cell",
+     "position_W": [
+      41.64,
+      4.93,
+      1.4
+     ]
+    },
+    {
+     "id": "h2t_o04",
+     "name": {
+      "de": "SICK-Lichtvorhang-Säulen (gelb)",
+      "en": "SICK light curtain posts (yellow)"
+     },
+     "type": "fence",
+     "position_W": [
+      40.61,
+      3.15,
+      0.75
+     ]
+    },
+    {
+     "id": "h2t_o05",
+     "name": {
+      "de": "UR-Cobot-Stationen (Alu-Rahmen)",
+      "en": "UR cobot stations (aluminium frames)"
+     },
+     "type": "robot_cell",
+     "position_W": [
+      38.79,
+      3.22,
+      1.0
+     ]
+    },
+    {
+     "id": "h2t_o06",
+     "name": {
+      "de": "Hallenstütze",
+      "en": "hall column"
+     },
+     "type": "column",
+     "position_W": [
+      38.22,
+      1.15,
+      4.5
+     ]
+    },
+    {
+     "id": "h2t_o07",
+     "name": {
+      "de": "Absperrpfosten mit roten Gurten",
+      "en": "stanchions with red belts"
+     },
+     "type": "barrier",
+     "position_W": [
+      43.61,
+      -1.27,
+      0.73
+     ]
+    },
+    {
+     "id": "h2t_o08",
+     "name": {
+      "de": "Hintergrund: Flugzeugrumpf-Tonne mit orangem KUKA",
+      "en": "background: aircraft fuselage barrel with orange KUKA"
+     },
+     "type": "machine",
+     "position_W": [
+      44.75,
+      -5.42,
+      1.5
+     ]
+    },
+    {
+     "id": "h2t_o09",
+     "name": {
+      "de": "Hintergrund: Bühne mit Treppe",
+      "en": "background: mezzanine with stairs"
+     },
+     "type": "stairs",
+     "position_W": [
+      40.29,
+      0.62,
+      1.91
+     ]
+    },
+    {
+     "id": "h2t_o10",
+     "name": {
+      "de": "Gelbe Kranbahn",
+      "en": "yellow crane runway"
+     },
+     "type": "crane",
+     "position_W": [
+      44.71,
+      -5.78,
+      7.45
+     ]
+    }
+   ]
+  },
+  {
+   "id": "st_vormontagestation_h2",
+   "kind": "station",
+   "group": "station",
+   "category": "assembly_workstation",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Vormontagestation – H2SkaProMo (Menschzentrierter, adaptiver Montageeinzelarbeitsplatz)",
+    "en": "Pre-assembly station – H2SkaProMo (human-centred adaptive single assembly workstation)"
+   },
+   "short": {
+    "de": "Vormontagestation (H2)",
+    "en": "Pre-assembly station (H2)"
+   },
+   "description": {
+    "de": "Adaptiver, menschzentrierter manueller Montageeinzelarbeitsplatz zur Montage der Fuß- und Kopfbaugruppe eines Brennstoffzellenstacks mit integriertem Recommender-System zur optimalen Konfiguration des Arbeitsplatzes.",
+    "en": "Adaptive, human-centred manual single workstation for assembling the end-plate assemblies of a fuel cell stack, with an integrated recommender system for the optimal workstation configuration."
+   },
+   "description_source": "album_B14334E0_A7B9_6200_41D3_7473FA08F123 (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_B14334E0_A7B9_6200_41D3_7473FA08F123_0.jpg",
+     "caption": {
+      "de": "Menschzentrierter, adaptiver Montageinzelarbeitsplatz",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_B14334E0_A7B9_6200_41D3_7473FA08F123_1.jpg",
+     "caption": {
+      "de": "Menschzentrierter, adaptiver Montageinzelarbeitsplatz",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    38.381,
+    7.872,
+    0.9
+   ],
+   "radius": 2.44,
+   "stand_W": [
+    39.707,
+    9.546,
+    0.0
+   ],
+   "look_at_W": [
+    38.381,
+    7.872,
+    0.6
+   ],
+   "pano_id": "media_98546404_1FF7_3A44_419A_C578815F6BD0",
+   "position_quality": "registered_pano_medium",
+   "position_note": "own pano media_98546404_1FF7_3A44_419A_C578815F6BD0 (medium): bearing yaw 20 / pitch -25 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": true,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "vor_o01",
+     "name": {
+      "de": "Säulen-Handhabungsmanipulator (orange, Strödter) mit Steuerkasten",
+      "en": "pillar-mounted handling manipulator (orange)"
+     },
+     "type": "manipulator",
+     "position_W": [
+      41.72,
+      10.34,
+      1.5
+     ]
+    },
+    {
+     "id": "vor_o02",
+     "name": {
+      "de": "Alu-Profil-Montagearbeitsplatz mit blauen KLT-Schrägregal, Monitor, Projektor",
+      "en": "aluminium assembly workbench with blue KLT rack, monitor, projector"
+     },
+     "type": "workbench",
+     "position_W": [
+      38.05,
+      8.46,
+      0.45
+     ]
+    },
+    {
+     "id": "vor_o03",
+     "name": {
+      "de": "Geschwungene Rollenbahn / Teileregale",
+      "en": "curved roller conveyor / part racks"
+     },
+     "type": "conveyor",
+     "position_W": [
+      40.56,
+      8.75,
+      0.45
+     ]
+    },
+    {
+     "id": "vor_o04",
+     "name": {
+      "de": "Rollwagen mit großer blauer Kiste",
+      "en": "trolley with large blue box"
+     },
+     "type": "trolley",
+     "position_W": [
+      38.58,
+      10.01,
+      0.45
+     ]
+    },
+    {
+     "id": "vor_o05",
+     "name": {
+      "de": "Posterständer 'Wandlungsfähige Montagesysteme für die Luftfahrt'",
+      "en": "poster stand (aerospace assembly)"
+     },
+     "type": "board",
+     "position_W": [
+      35.89,
+      11.5,
+      0.95
+     ]
+    },
+    {
+     "id": "vor_o06",
+     "name": {
+      "de": "Graue Stahlschränke",
+      "en": "grey steel cabinets"
+     },
+     "type": "cabinet",
+     "position_W": [
+      37.55,
+      11.89,
+      0.95
+     ]
+    },
+    {
+     "id": "vor_o07",
+     "name": {
+      "de": "Schwarze Lagerboxen mit gelben Etiketten auf Paletten",
+      "en": "black storage boxes with yellow labels on pallets"
+     },
+     "type": "pallet",
+     "position_W": [
+      39.14,
+      12.29,
+      0.5
+     ]
+    },
+    {
+     "id": "vor_o08",
+     "name": {
+      "de": "Weiß gestrichene Ziegel-Stirnwand der Halle mit Rohren",
+      "en": "white painted brick end wall with pipes"
+     },
+     "type": "wall",
+     "position_W": [
+      39.15,
+      12.05,
+      1.8
+     ]
+    },
+    {
+     "id": "vor_o09",
+     "name": {
+      "de": "Xenon-Automationszellen (Hintergrund)",
+      "en": "Xenon automation cells (background)"
+     },
+     "type": "robot_cell",
+     "position_W": [
+      42.7,
+      9.04,
+      1.15
+     ]
+    }
+   ]
+  },
+  {
+   "id": "st_sensitive_robotik",
+   "kind": "station",
+   "group": "station",
+   "category": "robot_cell",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Sensitive Robotik",
+    "en": "Sensitive robotics"
+   },
+   "short": {
+    "de": "Sensitive Robotik",
+    "en": "Sensitive robotics"
+   },
+   "description": {
+    "de": "SenRob 2.0 entwickelt ein KI-gestütztes Robotersystem zur automatisierten, sensitiven Qualitätskontrolle und Nachbearbeitung von Keramik-Weißlingen mittels adaptiver Kraftregelung für komplexe Freiformflächen.",
+    "en": "SenRob 2.0 develops an AI-supported robot system for automated, sensitive quality inspection and finishing of ceramic green bodies with adaptive force control for complex free-form surfaces."
+   },
+   "description_source": "album_CE404D3E_DF35_FE8D_41D0_8B302C81A3CA (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_CE404D3E_DF35_FE8D_41D0_8B302C81A3CA_0.jpg",
+     "caption": {
+      "de": "Sensitive Robotik",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_CE404D3E_DF35_FE8D_41D0_8B302C81A3CA_1.jpg",
+     "caption": {
+      "de": "Sensitive Robotik",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_CE404D3E_DF35_FE8D_41D0_8B302C81A3CA_2.jpg",
+     "caption": {
+      "de": "Sensitive Robotik",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    23.462,
+    -2.857,
+    0.981
+   ],
+   "radius": 2.0,
+   "stand_W": [
+    21.775,
+    -3.075,
+    0.0
+   ],
+   "look_at_W": [
+    23.462,
+    -2.857,
+    0.881
+   ],
+   "pano_id": "media_9D1E5522_9158_699E_41DD_93C853F3CE33",
+   "position_quality": "registered_pano_medium",
+   "position_note": "own pano media_9D1E5522_9158_699E_41DD_93C853F3CE33 (medium): bearing yaw -30 / pitch -20 scanned upward for the first non-floor surface in the pano range image (surface, 7/7 rays)",
+   "approx": true,
+   "photo_only": false,
+   "objects_W": [
+    {
+     "id": "sr_o01",
+     "name": {
+      "de": "Kabeltrommel-Wickelstand 1 (graue Trommel ~1.5 m in blauem Gitterkäfig, grüner Stahlsockel)",
+      "en": "cable drum winding stand 1 (grey drum in blue mesh cage, green steel base)"
+     },
+     "type": "machine",
+     "position_W": [
+      23.91,
+      -3.02,
+      0.9
+     ]
+    },
+    {
+     "id": "sr_o02",
+     "name": {
+      "de": "KUKA LBR iiwa hängend an blauer Säule",
+      "en": "KUKA LBR iiwa hanging from blue column"
+     },
+     "type": "robot_arm",
+     "position_W": [
+      28.27,
+      -2.86,
+      1.5
+     ]
+    },
+    {
+     "id": "sr_o03",
+     "name": {
+      "de": "Kabeltrommel-Wickelstand 2 mit Schaltschrank",
+      "en": "cable drum stand 2 with control cabinet"
+     },
+     "type": "machine",
+     "position_W": [
+      19.28,
+      -3.15,
+      0.8
+     ]
+    },
+    {
+     "id": "sr_o04",
+     "name": {
+      "de": "Kleiner Tisch mit Laptop und Stuhl",
+      "en": "small desk with laptop and chair"
+     },
+     "type": "desk",
+     "position_W": [
+      20.6,
+      -5.94,
+      0.38
+     ]
+    },
+    {
+     "id": "sr_o05",
+     "name": {
+      "de": "Absperrpfosten mit roten Gurten",
+      "en": "stanchions with red belts"
+     },
+     "type": "barrier",
+     "position_W": [
+      20.41,
+      -1.43,
+      0.84
+     ]
+    }
+   ]
+  },
+  {
+   "id": "st_flexible_montage_mrk",
+   "kind": "station",
+   "group": "station",
+   "category": "cobot_demo",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Flexible Montage durch Mensch-Roboter-Kollaboration",
+    "en": "Flexible assembly through human-robot collaboration"
+   },
+   "short": {
+    "de": "Flexible Montage (MRK)",
+    "en": "Flexible assembly (HRC)"
+   },
+   "description": {
+    "de": "Montagearbeitsplatz, an dem ein Leichtbauroboter auf einem ZeMA-Sockel Bauteile aus Lochplatten-Trays an den Werker übergibt; Teil der Robotix-Academy-Exponate.",
+    "en": "Assembly workstation where a lightweight robot on a ZeMA pedestal hands parts from perforated trays to the worker; part of the Robotix-Academy exhibits."
+   },
+   "description_source": "written for this catalogue",
+   "description_generated": true,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/media_2F42B601_3E7F_3B55_41B5_20DE1DEE9225_t.jpg",
+     "caption": {
+      "de": "Panorama dieser Station im virtuellen Rundgang (Vorschau)",
+      "en": "This station's panorama in the virtual tour (preview)"
+     }
+    }
+   ],
+   "position_W": [
+    24.339,
+    -1.654,
+    1.1
+   ],
+   "radius": 1.64,
+   "stand_W": [
+    23.225,
+    -1.425,
+    0.0
+   ],
+   "look_at_W": [
+    24.339,
+    -1.654,
+    1.0
+   ],
+   "pano_id": "media_2F42B601_3E7F_3B55_41B5_20DE1DEE9225",
+   "position_quality": "hub_bearing",
+   "position_note": "hub arrow to the station's pano (yaw 42.3, pitch -21.7) cast onto the floor with the hub range image = the tour camera spot; marker 1.2 m beyond it. The station's own pano is not registered (heading unknown), position +-1..2 m",
+   "approx": true,
+   "photo_only": true,
+   "objects_W": []
+  },
+  {
+   "id": "st_ergonomie_unterboden",
+   "kind": "station",
+   "group": "station",
+   "category": "vehicle_assembly",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Ergonomieverbesserung Roboterunterstützung – AUTOIBN Unterbodenmontage",
+    "en": "Ergonomics improvement by robot support – AUTOIBN underbody assembly"
+   },
+   "short": {
+    "de": "Ergonomie Unterbodenmontage",
+    "en": "Ergonomic underbody assembly"
+   },
+   "description": {
+    "de": "Die Unterbodenmontagestation unterstützt den Werker bei der Montage der Unterbodenverkleidung eines Fahrzeuges mittels einer Mensch-Roboter-Kooperation.",
+    "en": "The underbody assembly station supports the worker in mounting a vehicle's underbody panelling through human-robot cooperation."
+   },
+   "description_source": "album_028E9BC7_11C3_E6CD_4180_DC983E27DE6C (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_028E9BC7_11C3_E6CD_4180_DC983E27DE6C_0.jpg",
+     "caption": {
+      "de": "Ergonomieverbesserung Roboterunterstützung",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_028E9BC7_11C3_E6CD_4180_DC983E27DE6C_1.jpg",
+     "caption": {
+      "de": "Ergonomieverbesserung Roboterunterstützung",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_028E9BC7_11C3_E6CD_4180_DC983E27DE6C_2.jpg",
+     "caption": {
+      "de": "Ergonomieverbesserung Roboterunterstützung",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_020D4EC7_11CD_7EC8_41A2_263100874C30_0.jpg",
+     "caption": {
+      "de": "Radapationseinheit",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_020D4EC7_11CD_7EC8_41A2_263100874C30_1.jpg",
+     "caption": {
+      "de": "Radapationseinheit",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_020D4EC7_11CD_7EC8_41A2_263100874C30_2.jpg",
+     "caption": {
+      "de": "Radapationseinheit",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    18.631,
+    -22.5,
+    0.9
+   ],
+   "radius": 2.0,
+   "stand_W": [
+    18.399,
+    -21.018,
+    0.0
+   ],
+   "look_at_W": [
+    18.631,
+    -22.5,
+    0.6
+   ],
+   "pano_id": "media_9D17C756_9158_29A6_41DE_DD4B8BE3C90C",
+   "position_quality": "hub_bearing",
+   "position_note": "hub pano bearing yaw 148.0 / pitch -12.0..0.0 (hub_arrow) + hub range image (surface); position +-1..3 m; the station's own pano is not registered",
+   "approx": true,
+   "photo_only": true,
+   "objects_W": []
+  },
+  {
+   "id": "st_mrk_industrie40",
+   "kind": "station",
+   "group": "station",
+   "category": "robot_lab",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Mensch-Roboter-Kollaboration in der Industrie 4.0 (DFKI / Deutsch-Tschechisches Innovationslabor)",
+    "en": "Human-robot collaboration in Industry 4.0 (DFKI / German-Czech innovation lab)"
+   },
+   "short": {
+    "de": "MRK in der Industrie 4.0",
+    "en": "HRC in Industry 4.0"
+   },
+   "description": {
+    "de": "Innovationslabor mit mehreren kollaborativen Robotern (Franka Panda, KUKA iiwa, UR auf mobilen Plattformen, Rethink-Roboter) und Arbeitstischen für die Erforschung der Mensch-Roboter-Kollaboration in der Industrie 4.0.",
+    "en": "Innovation lab with several collaborative robots (Franka Panda, KUKA iiwa, UR on mobile platforms, Rethink robots) and work tables for research on human-robot collaboration in Industry 4.0."
+   },
+   "description_source": "written for this catalogue",
+   "description_generated": true,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/media_2E94DA9D_3E6F_4B6C_41A6_B75E8F7E220F_t.jpg",
+     "caption": {
+      "de": "Panorama dieser Station im virtuellen Rundgang (Vorschau)",
+      "en": "This station's panorama in the virtual tour (preview)"
+     }
+    }
+   ],
+   "position_W": [
+    10.901,
+    1.574,
+    0.9
+   ],
+   "radius": 2.0,
+   "stand_W": [
+    11.785,
+    0.362,
+    0.0
+   ],
+   "look_at_W": [
+    10.901,
+    1.574,
+    0.6
+   ],
+   "pano_id": "media_2E94DA9D_3E6F_4B6C_41A6_B75E8F7E220F",
+   "position_quality": "hub_bearing",
+   "position_note": "hub pano bearing yaw -60.5 / pitch -28.0..-8.0 (hub_arrow) + hub range image (surface); position +-1..3 m; the station's own pano is not registered",
+   "approx": true,
+   "photo_only": true,
+   "objects_W": []
+  },
+  {
+   "id": "ex_edih_saarland",
+   "kind": "info",
+   "group": "info",
+   "category": "info_booth",
+   "hall": "Halle 10",
+   "title": {
+    "de": "EDIH Saarland",
+    "en": "EDIH Saarland (European Digital Innovation Hub)"
+   },
+   "short": {
+    "de": "EDIH Saarland",
+    "en": "EDIH Saarland"
+   },
+   "description": {
+    "de": "Wir unterstützen KMU, Mid-Caps, Start-ups sowie öffentliche Einrichtungen bei der Integration von KI und Digitalisierung – im Saarland und der Großregion.",
+    "en": "Supports SMEs, mid-caps, start-ups and public institutions in integrating AI and digitalisation in Saarland and the Greater Region."
+   },
+   "description_source": "album_A29E0D28_B1F7_9AE3_41DC_4FDDBBC3D0C8 (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_A29E0D28_B1F7_9AE3_41DC_4FDDBBC3D0C8_0.jpg",
+     "caption": {
+      "de": "EDIH Saarland",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_A29E0D28_B1F7_9AE3_41DC_4FDDBBC3D0C8_1.jpg",
+     "caption": {
+      "de": "EDIH Saarland",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    11.515,
+    -2.809,
+    0.945
+   ],
+   "radius": 2.14,
+   "stand_W": [
+    11.425,
+    -0.975,
+    0.0
+   ],
+   "look_at_W": [
+    11.515,
+    -2.809,
+    0.845
+   ],
+   "pano_id": null,
+   "position_quality": "other_pano_bearing",
+   "position_note": "EDIH counter = LLM demonstrator counter: LLM pano bearing yaw -35 / pitch -20 + its range image (surface)",
+   "approx": true,
+   "photo_only": false,
+   "objects_W": []
+  },
+  {
+   "id": "ex_mittelstand_digital_zentrum",
+   "kind": "info",
+   "group": "info",
+   "category": "info_booth",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Mittelstand-Digital Zentrum Saarbrücken",
+    "en": "Mittelstand-Digital Centre Saarbrücken"
+   },
+   "short": {
+    "de": "Mittelstand-Digital Zentrum",
+    "en": "Mittelstand-Digital Centre"
+   },
+   "description": {
+    "de": "Das Mittelstand-Digital Netzwerk bietet mit seinen Mittelstand-Digital Zentren und der Initiative IT-Sicherheit in der Wirtschaft umfassende Unterstützung rund um Digitalisierung und den Einsatz von Künstlicher Intelligenz in Unternehmen.",
+    "en": "The Mittelstand-Digital network, with its centres and the IT security initiative, offers companies comprehensive support for digitalisation and the use of AI."
+   },
+   "description_source": "album_A4599F15_B1FB_F6D1_41E0_EF5E78EBE24A (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_A4599F15_B1FB_F6D1_41E0_EF5E78EBE24A_0.jpg",
+     "caption": {
+      "de": "Mittelstand-Digital Zentrum",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_A4599F15_B1FB_F6D1_41E0_EF5E78EBE24A_1.jpg",
+     "caption": {
+      "de": "Mittelstand-Digital Zentrum",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    18.544,
+    3.129,
+    1.3
+   ],
+   "radius": 2.0,
+   "stand_W": [
+    18.105,
+    1.694,
+    0.0
+   ],
+   "look_at_W": [
+    18.544,
+    3.129,
+    1.2
+   ],
+   "pano_id": null,
+   "position_quality": "hub_bearing",
+   "position_note": "hub pano bearing yaw -7.4, nearest floor contact at pitch -28.0 (hub_hotspot) cast with the hub range image, +0.5 m; position +-1..2 m",
+   "approx": true,
+   "photo_only": false,
+   "objects_W": []
+  },
+  {
+   "id": "ex_rzzki",
+   "kind": "info",
+   "group": "info",
+   "category": "info_booth",
+   "hall": "Halle 10",
+   "title": {
+    "de": "RZzKI – Regionales Zukunftszentrum für KI und digitale Transformation",
+    "en": "RZzKI – regional future centre for AI and digital transformation"
+   },
+   "short": {
+    "de": "RZzKI",
+    "en": "RZzKI"
+   },
+   "description": {
+    "de": "Das RZzKI-Projekt ist ein öffentlich gefördertes Projekt im Saarland und Rheinland-Pfalz. Es unterstützt vor allem (KMU) dabei, die Digitalisierung und den Einsatz von Künstlicher Intelligenz (KI) umzusetzen. Unternehmen lernen bei uns, digitale Technologien sinnvoll einzusetzen, ihre Mitarbeitenden mitzunehmen und fit für die Zukunft mit KI zu werden.",
+    "en": "RZZKI is a publicly funded project in Saarland and Rhineland-Palatinate that helps companies, especially SMEs, to adopt digitalisation and artificial intelligence, take their staff along and become fit for the future with AI."
+   },
+   "description_source": "album_A527D5A6_B1F8_B5F6_41E1_16018FE3E24C (poster page 0, transcribed verbatim incl. original spelling)",
+   "description_generated": false,
+   "media": [
+    {
+     "type": "image",
+     "url": "media/album_A527D5A6_B1F8_B5F6_41E1_16018FE3E24C_0.jpg",
+     "caption": {
+      "de": "RZZKI",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_A527D5A6_B1F8_B5F6_41E1_16018FE3E24C_1.jpg",
+     "caption": {
+      "de": "RZZKI",
+      "en": "Info board from the tour"
+     }
+    },
+    {
+     "type": "image",
+     "url": "media/album_A527D5A6_B1F8_B5F6_41E1_16018FE3E24C_2.jpg",
+     "caption": {
+      "de": "RZZKI",
+      "en": "Info board from the tour"
+     }
+    }
+   ],
+   "position_W": [
+    15.557,
+    2.732,
+    1.3
+   ],
+   "radius": 2.0,
+   "stand_W": [
+    15.63,
+    1.234,
+    0.0
+   ],
+   "look_at_W": [
+    15.557,
+    2.732,
+    1.2
+   ],
+   "pano_id": null,
+   "position_quality": "hub_bearing",
+   "position_note": "hub pano bearing yaw -27.4, nearest floor contact at pitch -30.0 (hub_hotspot) cast with the hub range image, +0.5 m; position +-1..2 m",
+   "approx": true,
+   "photo_only": false,
+   "objects_W": []
+  },
+  {
+   "id": "ex_flugzeugschale",
+   "kind": "info",
+   "group": "info",
+   "category": "demonstrator",
+   "hall": "Halle 10",
+   "title": {
+    "de": "Flugzeugschale (Rumpfsegment)",
+    "en": "Aircraft fuselage shell"
+   },
+   "short": {
+    "de": "Flugzeug-Rumpfschale",
+    "en": "Aircraft fuselage shell"
+   },
+   "description": {
+    "de": "Großes Rumpfsegment eines Flugzeugs (CFK-Schale mit Spanten) als Exponat für Montageprozesse in der Luftfahrt; im Tour-Menü als 'Flugzeugschale' geführt.",
+    "en": "Large aircraft fuselage segment (CFRP shell with frames) shown as an exhibit for aerospace assembly processes; listed as 'Flugzeugschale' in the tour menu."
+   },
+   "description_source": "written for this catalogue",
+   "description_generated": true,
+   "media": [],
+   "position_W": [
+    30.495,
+    10.307,
+    0.968
+   ],
+   "radius": 2.1,
+   "stand_W": [
+    30.275,
+    8.525,
+    0.0
+   ],
+   "look_at_W": [
+    30.495,
+    10.307,
+    0.868
+   ],
+   "pano_id": null,
+   "position_quality": "other_pano_bearing",
+   "position_note": "Demontage pano bearing yaw 21 / pitch -2..6 + its range image (surface)",
+   "approx": true,
+   "photo_only": false,
+   "objects_W": []
+  }
+ ]
+}
