@@ -1,0 +1,11 @@
+/* web_v3 additions (css/style.css stays identical to the v2 engine) */
+/* ---- v3 review fix: narrow phones (< 400 px): 44 px class touch targets in the top bar. The photo-texture toggle
+   and the help move into the settings panel (both are there already / added), the bar keeps 5 icon buttons. ---- */
+#row-help { display: none; }
+@media (max-width: 400px) {
+  #topbar { gap: 5px; }
+  #btn-proj, #btn-help { display: none; }
+  #row-help { display: flex; }
+  button.icon { width: 44px; height: 44px; flex-shrink: 0; }
+  #discovered { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+}

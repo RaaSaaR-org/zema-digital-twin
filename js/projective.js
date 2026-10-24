@@ -6,6 +6,7 @@
 // tripod-nadir mask, masks rays that pass through "remove" boxes (objects that exist in the photos but not in the
 // twin, e.g. the green tool cabinet replaced by the G1), and blends the result over the baked colour.
 import * as THREE from 'three';
+import { HALL_HOOK_PARS_FRAG, HALL_HOOK_FRAG, makeHallUniforms } from './splats.js';
 import { panoPoseToGl, toMatrix3Elements } from './coords.js';
 
 export const MAX_PANOS = 4;
@@ -38,12 +39,17 @@ const VERT = /* glsl */`
 #include <color_pars_vertex>
 varying vec3 vWorldPos;
 varying vec2 vUv0;
+uniform float depthPush;   // v3 splat layer: hall drawn as a backdrop pushed back along the view rays (0 = v2)
 void main() {
   #include <color_vertex>
   vUv0 = uv;
   vec4 wp = modelMatrix * vec4(position, 1.0);
   vWorldPos = wp.xyz;
   gl_Position = projectionMatrix * viewMatrix * wp;
+  if (depthPush > 0.0) {
+    vec4 vp = viewMatrix * wp;
+    gl_Position = projectionMatrix * vec4(vp.xyz * (1.0 + depthPush / max(length(vp.xyz), 1e-3)), 1.0);
+  }
 }
 `;
 
@@ -71,6 +77,7 @@ uniform float sharpness;
 uniform float depthTol;
 uniform float nadirSin;                 // sin of the lowest usable pitch (tripod mask)
 uniform int debugMode;
+${HALL_HOOK_PARS_FRAG}
 ${PANO_UV_GLSL}
 
 float rayHitsRemoveBox(vec3 ro, vec3 rd, float tmax) {
@@ -109,6 +116,9 @@ float panoWeight(int i, vec3 P, vec3 N, vec3 viewDir, float stored, out vec3 dir
 }
 
 void main() {
+  #define vHallWp vWorldPos
+  ${HALL_HOOK_FRAG}
+  #undef vHallWp
   vec3 vc = vec3(1.0);
   #if defined( USE_COLOR_ALPHA )
     vc = vColor.rgb;
@@ -142,7 +152,7 @@ void main() {
   ws *= step(0.02, ws);                     // drop negligible contributions (saves texture fetches)
   float wsum = ws.x + ws.y + ws.z + ws.w;
   // 3) colour fetches for active slots only (uniform branches; per-fragment divergent texture branches were
-  //    avoided after GPU hangs on an AMD iGPU)
+  //    avoided after GPU hangs on an AMD iGPU, see the v2 web dev notes)
   vec3 proj = vec3(0.0);
   if (panoParam[0].x > 0.5) proj += ws.x * textureGrad(panoTex0, uv0, g0.xy, g0.zw).rgb * panoGain[0];
   if (panoParam[1].x > 0.5) proj += ws.y * textureGrad(panoTex1, uv1, g1.xy, g1.zw).rgb * panoGain[1];
@@ -235,6 +245,7 @@ export class ProjectiveTexturing {
       depthTol: { value: 0.03 },
       nadirSin: { value: -Math.sin(THREE.MathUtils.degToRad(76)) },
       debugMode: { value: 0 },
+      ...(opts.hallUniforms || makeHallUniforms()),   // v3: depthPush + free-space discard (splats.js)
     };
     this.uniforms = u;
     this.distMat = new THREE.ShaderMaterial({ vertexShader: DIST_VERT, fragmentShader: DIST_FRAG,
@@ -311,7 +322,7 @@ export class ProjectiveTexturing {
     this.uniforms.camPos.value.copy(camera.position);
     // camera-distance fade: a pano's photo is projected fully while the camera is within camNear of the tour spot
     // and fades to the baked texture by camFar (projecting a photo taken 5-15 m away onto approximate geometry
-    // is worse than the multi-view baked texture; measured at held-out DJI frames, see outputs/claude_rundgang/web)
+    // is worse than the multi-view baked texture; measured at held-out frames of the hand-held video)
     const cf = this.uniforms.panoCamFac.value;
     for (let k = 0; k < MAX_PANOS; k++) {
       const p = this.active[k];
@@ -457,9 +468,15 @@ export class ProjectiveTexturing {
     }
   }
 
-  invalidateDepth() {
-    for (const p of this.panos) if (p.depth) { p.depth.dispose(); p.depth = null; }
-    this._dirty = true;
+  /** Drop the depth cubes (geometry changed). runtimeOnly: only those rendered from the scene (the precomputed
+   *  depth equirects do not depend on which hall nodes are shown). */
+  invalidateDepth(runtimeOnly = false) {
+    let n = 0;
+    for (const p of this.panos) {
+      if (!p.depth || (runtimeOnly && p.depthSource !== 'runtime')) continue;
+      p.depth.dispose(); p.depth = null; n++;
+    }
+    if (n || !runtimeOnly) this._dirty = true;
   }
 }
 

@@ -1,6 +1,6 @@
 {
  "schema": "claude_rundgang.stations.v1",
- "source": "catalogue/stations.json placed by rundgang/web_build.py",
+ "source": "ZeMA virtual tour catalogue (titles, texts, bearings), placed in the twin",
  "groups": {
   "station": {
    "de": "Stationen",
@@ -54,8 +54,8 @@
     "en": "AI inspection (VADER)"
    },
    "description": {
-    "de": "Die manuelle Sichtprüfung von Komponenten einer NKW-Kupplung soll mittels eines flexiblen Robotersystems automatisiert werden. Die gezeigte Lösung beinhaltet eine KI-gestützte Fehlererkennung, welche mit synthetischen Bilddaten trainiert wurde.",
-    "en": "Manual visual inspection of truck clutch components is to be automated by a flexible robot system; the solution includes AI-based defect detection trained on synthetic image data."
+    "de": "Die manuelle Sichtprüfung von Komponenten einer NKW-Kupplung soll mittels eines flexiblen Robotersystems automatisiert werden. Die gezeigte Lösung beinhaltet eine KI-gestützte Fehlererkennung, welche mit synthetischen Bilddaten trainiert wurde.\n\nHeute: Die VADER-Zelle steht nicht mehr an dieser Stelle; dort ist jetzt die Station des Unitree G1 (so zeigt es ein Handvideo der Halle). Die Zelle selbst ist im echten 360°-Foto (P) und im Zustand des Rundgangs zu sehen (Einstellungen: „Station G1“ → „Zustand im Rundgang“).",
+    "en": "Manual visual inspection of truck clutch components is to be automated by a flexible robot system; the solution includes AI-based defect detection trained on synthetic image data.\n\nToday: the VADER cell no longer stands here; the Unitree G1's station is there now (as a hand-held video of the hall shows). The cell itself is in the real 360° photo (P) and in the tour state (settings: \"G1 station\" -> \"State in the tour\")."
    },
    "description_source": "album_B25B0B19_A7CB_4C26_41DC_BBAA34715167 (poster page 0, transcribed verbatim incl. original spelling)",
    "description_generated": false,
@@ -82,10 +82,10 @@
     -9.848,
     1.063
    ],
-   "radius": 2.52,
+   "radius": 2.54,
    "stand_W": [
-    8.199,
-    -8.309,
+    8.125,
+    -8.325,
     0.0
    ],
    "look_at_W": [
@@ -107,7 +107,7 @@
      },
      "type": "robot_arm",
      "position_W": [
-      11.75,
+      11.76,
       -23.64,
       0.6
      ]
@@ -147,7 +147,7 @@
      "type": "desk",
      "position_W": [
       10.04,
-      -8.23,
+      -8.22,
       0.38
      ]
     },
@@ -159,8 +159,8 @@
      },
      "type": "screen",
      "position_W": [
-      11.56,
-      -8.95,
+      11.54,
+      -8.96,
       0.33
      ]
     },
@@ -198,8 +198,8 @@
      },
      "type": "part",
      "position_W": [
-      6.18,
-      -8.73,
+      6.17,
+      -8.74,
       0.05
      ]
     },
@@ -211,8 +211,8 @@
      },
      "type": "floor_mat",
      "position_W": [
-      4.6,
-      -8.25,
+      4.59,
+      -8.2,
       0.01
      ]
     },
@@ -237,8 +237,8 @@
      },
      "type": "truss",
      "position_W": [
-      12.02,
-      -10.33,
+      12.03,
+      -10.35,
       2.0
      ]
     },
@@ -264,8 +264,8 @@
      "type": "vehicle_line",
      "position_W": [
       5.85,
-      -14.76,
-      1.33
+      -14.77,
+      1.35
      ]
     },
     {
@@ -276,8 +276,8 @@
      },
      "type": "vehicle",
      "position_W": [
-      11.86,
-      -6.24,
+      11.79,
+      -6.28,
       0.8
      ]
     },
@@ -289,12 +289,26 @@
      },
      "type": "table",
      "position_W": [
-      5.67,
-      -4.9,
-      1.01
+      5.73,
+      -4.91,
+      1.05
      ]
     }
-   ]
+   ],
+   "variants": {
+    "present_day": {
+     "description": {
+      "de": "Die manuelle Sichtprüfung von Komponenten einer NKW-Kupplung soll mittels eines flexiblen Robotersystems automatisiert werden. Die gezeigte Lösung beinhaltet eine KI-gestützte Fehlererkennung, welche mit synthetischen Bilddaten trainiert wurde.\n\nHeute: Die VADER-Zelle steht nicht mehr an dieser Stelle; dort ist jetzt die Station des Unitree G1 (so zeigt es ein Handvideo der Halle). Die Zelle selbst ist im echten 360°-Foto (P) und im Zustand des Rundgangs zu sehen (Einstellungen: „Station G1“ → „Zustand im Rundgang“).",
+      "en": "Manual visual inspection of truck clutch components is to be automated by a flexible robot system; the solution includes AI-based defect detection trained on synthetic image data.\n\nToday: the VADER cell no longer stands here; the Unitree G1's station is there now (as a hand-held video of the hall shows). The cell itself is in the real 360° photo (P) and in the tour state (settings: \"G1 station\" -> \"State in the tour\")."
+     }
+    },
+    "tour": {
+     "description": {
+      "de": "Die manuelle Sichtprüfung von Komponenten einer NKW-Kupplung soll mittels eines flexiblen Robotersystems automatisiert werden. Die gezeigte Lösung beinhaltet eine KI-gestützte Fehlererkennung, welche mit synthetischen Bilddaten trainiert wurde.",
+      "en": "Manual visual inspection of truck clutch components is to be automated by a flexible robot system; the solution includes AI-based defect detection trained on synthetic image data."
+     }
+    }
+   }
   },
   {
    "id": "g1_unitree",
@@ -311,43 +325,121 @@
     "en": "Unitree G1 (new)"
    },
    "description": {
-    "de": "Der humanoide Roboter Unitree G1 (rund 1,3 m groß, 29 Gelenke) mit zwei dreifingrigen Dex3-1-Händen ist neu im Team und deshalb im virtuellen Rundgang noch nicht zu sehen. Im digitalen Zwilling steht er an der Station „KI-gestützte Inspektion zerspanter Bauteile“ – genau dort, wo im Rundgang der grüne Werkzeugwagen steht. Der Wagen ist im Zwilling entfernt (Geometrie und Fotos).\n\nDas Modell stammt aus der offenen Unitree-Robotikbeschreibung (MJCF, BSD-3-Clause); die Gelenkstellung ist eine neutrale Standhaltung, dieselbe wie im Isaac-Sim-Zwilling und im Vergleichsvideo. Im Panorama-Modus (P) wird der G1 in das echte Foto eingeblendet.\n\nPosition: aus der Pose des VADER-Panoramas und der Lage des Werkzeugwagens, Unsicherheit etwa ±0,2 m.",
-    "en": "The Unitree G1 humanoid (about 1.3 m tall, 29 joints) with two three-finger Dex3-1 hands is new on the team and therefore not yet in the virtual tour. In the digital twin it stands at the station \"AI-assisted inspection of machined parts\", exactly where the green tool cabinet stands in the tour. The cabinet is removed from the twin (geometry and photos).\n\nThe model comes from Unitree's open robot description (MJCF, BSD-3-Clause); the joint angles are a neutral standing stance, the same as in the Isaac Sim twin and the comparison video. In panorama mode (P) the G1 is composited into the real photo.\n\nPosition: from the VADER pano pose and the cabinet's location, uncertainty about ±0.2 m."
+    "de": "Der humanoide Roboter Unitree G1 (rund 1,3 m groß, 29 Gelenke) mit zwei dreifingrigen Dex3-1-Händen ist neu im Team und deshalb im virtuellen Rundgang noch nicht zu sehen. Der Zwilling zeigt seine Station so, wie sie heute aussieht (aus einem Handvideo der Halle): Der G1 hängt im Gurtgeschirr an einem schwarzen Portalgestell über einer gelben Matte, abgesperrt von vier Pfosten mit roten Gurtbändern. Die VADER-Zelle, die im Rundgang an dieser Stelle steht, gibt es dort nicht mehr.\n\nGestell, Matte, Pfosten und Gurtbänder sind aus dem Video vermessen, die Umgebung der Station ist aus ihm rekonstruiert. Das Robotermodell stammt aus der offenen Unitree-Robotikbeschreibung (BSD-3-Clause) und hat das Aussehen des echten G1: silberne Schalen, schwarze Gelenke und schwarzer Helm, blaue Ringe an den Handgelenken, schwarze Dex3-Hände. Seine Gelenkstellung ist an das Video angepasst.\n\nDen Zustand aus dem Rundgang (der G1 stehend an der Stelle des grünen Werkzeugwagens, die VADER-Zelle dahinter) zeigen die Einstellungen unter „Station G1“ oder der Link-Zusatz ?station=tour.",
+    "en": "The Unitree G1 humanoid (about 1.3 m tall, 29 joints) with two three-finger Dex3-1 hands is new on the team and therefore not yet in the virtual tour. The twin shows its station as it looks today (from a hand-held video of the hall): the G1 hangs in a harness from a black gantry above a yellow mat, fenced off by four posts with red retractable belts. The VADER cell that stands here in the tour is gone.\n\nGantry, mat, posts and belts are measured from the video, and the surroundings of the station are reconstructed from it. The robot model comes from Unitree's open robot description (BSD-3-Clause) with the look of the real G1: silver shells, black joints and helmet, blue wrist rings, black Dex3 hands. Its joint angles are fitted to the video.\n\nThe state in the tour (the G1 standing where the green tool cabinet is, the VADER cell behind it) is in the settings under \"G1 station\" or with ?station=tour added to the link."
    },
    "description_source": "written for the twin (not from the tour)",
    "description_generated": true,
    "media": [
     {
      "type": "image",
-     "url": "media/g1_in_vader_photo.jpg",
+     "url": "media/g1_present_day.jpg",
      "caption": {
-      "de": "Der G1 im Zwilling, eingeblendet in das echte 360°-Foto der Station (Panorama-Modus). Der grüne Werkzeugwagen ist entfernt.",
-      "en": "The G1 in the twin, composited into the station's real 360° photo (panorama mode). The green tool cabinet is removed."
+      "de": "Der G1 im Zwilling an seiner heutigen Station: Portalgestell mit Gurtgeschirr, gelbe Matte, Pfosten mit roten Gurtbändern.",
+      "en": "The G1 in the twin at its station today: gantry with harness, yellow mat, posts with red retractable belts."
      }
     }
    ],
    "position_W": [
-    6.477,
-    -9.761,
-    1.45
+    7.236,
+    -9.833,
+    1.7
    ],
    "radius": 2.2,
    "stand_W": [
-    7.775,
-    -9.725,
+    6.675,
+    -8.125,
     0.0
    ],
    "look_at_W": [
-    6.477,
-    -9.761,
-    0.9
+    7.236,
+    -9.833,
+    0.85
    ],
    "pano_id": "media_9D15058B_1FCD_1A4E_41BC_01F37658EB07",
-   "position_quality": "g1_spot",
-   "position_note": "poses_v2/g1_spot_W.json g1_root_W (sigma 0.22 m), yaw 0.0 deg",
+   "position_quality": "station_present_day",
+   "position_note": "present-day G1 root from the hand-held video of the hall (fitted pose), yaw 114.9 deg",
    "approx": false,
    "marker_color": "#c48cff",
-   "new": true
+   "new": true,
+   "variants": {
+    "present_day": {
+     "title": {
+      "de": "Unitree G1 mit Dex3-Händen – neu, nicht im virtuellen Rundgang",
+      "en": "Unitree G1 with Dex3 hands – new, not in the virtual tour"
+     },
+     "description": {
+      "de": "Der humanoide Roboter Unitree G1 (rund 1,3 m groß, 29 Gelenke) mit zwei dreifingrigen Dex3-1-Händen ist neu im Team und deshalb im virtuellen Rundgang noch nicht zu sehen. Der Zwilling zeigt seine Station so, wie sie heute aussieht (aus einem Handvideo der Halle): Der G1 hängt im Gurtgeschirr an einem schwarzen Portalgestell über einer gelben Matte, abgesperrt von vier Pfosten mit roten Gurtbändern. Die VADER-Zelle, die im Rundgang an dieser Stelle steht, gibt es dort nicht mehr.\n\nGestell, Matte, Pfosten und Gurtbänder sind aus dem Video vermessen, die Umgebung der Station ist aus ihm rekonstruiert. Das Robotermodell stammt aus der offenen Unitree-Robotikbeschreibung (BSD-3-Clause) und hat das Aussehen des echten G1: silberne Schalen, schwarze Gelenke und schwarzer Helm, blaue Ringe an den Handgelenken, schwarze Dex3-Hände. Seine Gelenkstellung ist an das Video angepasst.\n\nDen Zustand aus dem Rundgang (der G1 stehend an der Stelle des grünen Werkzeugwagens, die VADER-Zelle dahinter) zeigen die Einstellungen unter „Station G1“ oder der Link-Zusatz ?station=tour.",
+      "en": "The Unitree G1 humanoid (about 1.3 m tall, 29 joints) with two three-finger Dex3-1 hands is new on the team and therefore not yet in the virtual tour. The twin shows its station as it looks today (from a hand-held video of the hall): the G1 hangs in a harness from a black gantry above a yellow mat, fenced off by four posts with red retractable belts. The VADER cell that stands here in the tour is gone.\n\nGantry, mat, posts and belts are measured from the video, and the surroundings of the station are reconstructed from it. The robot model comes from Unitree's open robot description (BSD-3-Clause) with the look of the real G1: silver shells, black joints and helmet, blue wrist rings, black Dex3 hands. Its joint angles are fitted to the video.\n\nThe state in the tour (the G1 standing where the green tool cabinet is, the VADER cell behind it) is in the settings under \"G1 station\" or with ?station=tour added to the link."
+     },
+     "media": [
+      {
+       "type": "image",
+       "url": "media/g1_present_day.jpg",
+       "caption": {
+        "de": "Der G1 im Zwilling an seiner heutigen Station: Portalgestell mit Gurtgeschirr, gelbe Matte, Pfosten mit roten Gurtbändern.",
+        "en": "The G1 in the twin at its station today: gantry with harness, yellow mat, posts with red retractable belts."
+       }
+      }
+     ],
+     "position_W": [
+      7.236,
+      -9.833,
+      1.7
+     ],
+     "radius": 2.2,
+     "stand_W": [
+      6.675,
+      -8.125,
+      0.0
+     ],
+     "look_at_W": [
+      7.236,
+      -9.833,
+      0.85
+     ],
+     "position_quality": "station_present_day",
+     "position_note": "present-day G1 root from the hand-held video of the hall (fitted pose), yaw 114.9 deg"
+    },
+    "tour": {
+     "title": {
+      "de": "Unitree G1 mit Dex3-Händen – neu, nicht im virtuellen Rundgang",
+      "en": "Unitree G1 with Dex3 hands – new, not in the virtual tour"
+     },
+     "description": {
+      "de": "Der humanoide Roboter Unitree G1 (rund 1,3 m groß, 29 Gelenke) mit zwei dreifingrigen Dex3-1-Händen ist neu im Team und deshalb im virtuellen Rundgang noch nicht zu sehen. Im digitalen Zwilling steht er an der Station „KI-gestützte Inspektion zerspanter Bauteile“ – genau dort, wo im Rundgang der grüne Werkzeugwagen steht. Der Wagen ist im Zwilling entfernt (Geometrie und Fotos).\n\nDas Modell stammt aus der offenen Unitree-Robotikbeschreibung (BSD-3-Clause), mit dem Aussehen des echten G1; die Gelenkstellung ist eine neutrale Standhaltung, dieselbe wie im Isaac-Sim-Zwilling und im Vergleichsvideo. Im Panorama-Modus (P) wird der G1 in das echte Foto eingeblendet.\n\nPosition: aus der Pose des VADER-Panoramas und der Lage des Werkzeugwagens, Unsicherheit etwa ±0,2 m.\n\nSo steht der G1 im Rundgang-Zustand. Seine heutige Station (Portalgestell, gelbe Matte, Pfosten mit roten Gurtbändern) ist die Standardansicht des Zwillings (Einstellungen: „Station G1“ → „Heute“).",
+      "en": "The Unitree G1 humanoid (about 1.3 m tall, 29 joints) with two three-finger Dex3-1 hands is new on the team and therefore not yet in the virtual tour. In the digital twin it stands at the station \"AI-assisted inspection of machined parts\", exactly where the green tool cabinet stands in the tour. The cabinet is removed from the twin (geometry and photos).\n\nThe model comes from Unitree's open robot description (BSD-3-Clause), with the look of the real G1; the joint angles are a neutral standing stance, the same as in the Isaac Sim twin and the comparison video. In panorama mode (P) the G1 is composited into the real photo.\n\nPosition: from the VADER pano pose and the cabinet's location, uncertainty about ±0.2 m.\n\nThis is the tour state. Its station as it is today (gantry, yellow mat, posts with red belts) is the twin's default view (settings: \"G1 station\" -> \"Today\")."
+     },
+     "media": [
+      {
+       "type": "image",
+       "url": "media/g1_in_vader_photo.jpg",
+       "caption": {
+        "de": "Der G1 im Zwilling, eingeblendet in das echte 360°-Foto der Station (Panorama-Modus). Der grüne Werkzeugwagen ist entfernt.",
+        "en": "The G1 in the twin, composited into the station's real 360° photo (panorama mode). The green tool cabinet is removed."
+       }
+      }
+     ],
+     "position_W": [
+      6.477,
+      -9.761,
+      1.45
+     ],
+     "radius": 2.2,
+     "stand_W": [
+      7.775,
+      -9.725,
+      0.0
+     ],
+     "look_at_W": [
+      6.477,
+      -9.761,
+      0.9
+     ],
+     "position_quality": "g1_spot",
+     "position_note": "G1 root from the VADER pano pose and the tool cabinet (sigma 0.22 m), yaw 0 deg"
+    }
+   }
   },
   {
    "id": "st_llm_demonstrator",
@@ -425,8 +517,8 @@
      },
      "type": "counter",
      "position_W": [
-      10.87,
-      -2.03,
+      10.77,
+      -2.02,
       0.47
      ]
     },
@@ -438,8 +530,8 @@
      },
      "type": "robot_arm",
      "position_W": [
-      11.35,
-      -1.72,
+      11.32,
+      -3.43,
       0.4
      ]
     },
@@ -451,8 +543,8 @@
      },
      "type": "desk",
      "position_W": [
-      13.03,
-      -2.35,
+      13.02,
+      -2.21,
       0.38
      ]
     },
@@ -464,8 +556,8 @@
      },
      "type": "chair",
      "position_W": [
-      13.52,
-      -1.87,
+      16.07,
+      -3.67,
       0.55
      ]
     },
@@ -478,7 +570,7 @@
      "type": "truss",
      "position_W": [
       11.95,
-      -2.06,
+      -2.05,
       2.0
      ]
     },
@@ -503,8 +595,8 @@
      },
      "type": "screen",
      "position_W": [
-      10.42,
-      1.23,
+      10.51,
+      1.22,
       1.25
      ]
     },
@@ -529,8 +621,8 @@
      },
      "type": "flag",
      "position_W": [
-      9.77,
-      -1.72,
+      9.86,
+      -1.55,
       1.5
      ]
     },
@@ -542,9 +634,9 @@
      },
      "type": "floor_marking",
      "position_W": [
-      10.89,
-      -1.47,
-      0.71
+      10.76,
+      -1.25,
+      0.86
      ]
     }
    ]
@@ -598,7 +690,7 @@
    "position_W": [
     22.946,
     -8.64,
-    0.971
+    0.972
    ],
    "radius": 2.5,
    "stand_W": [
@@ -609,7 +701,7 @@
    "look_at_W": [
     22.946,
     -8.64,
-    0.871
+    0.872
    ],
    "pano_id": "media_95583947_1FF5_6AC5_41A9_79BC9AD0D8A7",
    "position_quality": "registered_pano",
@@ -626,7 +718,7 @@
      "type": "counter",
      "position_W": [
       23.21,
-      -8.67,
+      -8.66,
       0.45
      ]
     },
@@ -638,8 +730,8 @@
      },
      "type": "robot_arm",
      "position_W": [
-      23.75,
-      -8.04,
+      23.54,
+      -7.92,
       0.65
      ]
     },
@@ -652,7 +744,7 @@
      "type": "desk",
      "position_W": [
       20.1,
-      -8.54,
+      -8.52,
       0.38
      ]
     },
@@ -664,8 +756,8 @@
      },
      "type": "truss",
      "position_W": [
-      20.04,
-      -9.96,
+      20.02,
+      -9.93,
       2.0
      ]
     },
@@ -677,7 +769,7 @@
      },
      "type": "column",
      "position_W": [
-      25.03,
+      25.04,
       -11.15,
       4.5
      ]
@@ -703,7 +795,7 @@
      },
      "type": "cabinet",
      "position_W": [
-      19.87,
+      19.88,
       -11.58,
       0.95
      ]
@@ -794,9 +886,9 @@
     }
    ],
    "position_W": [
-    28.955,
+    28.956,
     -8.17,
-    1.066
+    1.065
    ],
    "radius": 2.5,
    "stand_W": [
@@ -805,9 +897,9 @@
     0.0
    ],
    "look_at_W": [
-    28.955,
+    28.956,
     -8.17,
-    0.966
+    0.965
    ],
    "pano_id": "media_36C9969B_25F9_872D_41B6_0244612E3390",
    "position_quality": "registered_pano",
@@ -823,7 +915,7 @@
      },
      "type": "table",
      "position_W": [
-      29.11,
+      29.09,
       -8.34,
       0.45
      ]
@@ -836,7 +928,7 @@
      },
      "type": "robot_arm",
      "position_W": [
-      29.63,
+      29.71,
       -11.19,
       0.45
      ]
@@ -876,7 +968,7 @@
      },
      "type": "cabinet",
      "position_W": [
-      29.9,
+      29.91,
       -11.35,
       0.95
      ]
@@ -890,7 +982,7 @@
      "type": "table",
      "position_W": [
       29.68,
-      -4.61,
+      -4.64,
       0.45
      ]
     },
@@ -902,8 +994,8 @@
      },
      "type": "desk",
      "position_W": [
-      33.78,
-      -6.29,
+      33.77,
+      -6.37,
       0.38
      ]
     },
@@ -990,20 +1082,20 @@
     }
    ],
    "position_W": [
-    29.881,
-    -4.432,
+    29.91,
+    -4.405,
     0.9
    ],
    "radius": 2.5,
    "stand_W": [
-    30.975,
-    -3.325,
+    30.954,
+    -3.107,
     0.0
    ],
    "look_at_W": [
-    29.881,
-    -4.432,
-    0.7
+    29.91,
+    -4.405,
+    0.72
    ],
    "pano_id": "media_64DB003E_1FDD_1A4B_41BC_B1215C200E50",
    "position_quality": "registered_pano",
@@ -1019,8 +1111,8 @@
      },
      "type": "table",
      "position_W": [
-      29.87,
-      -4.67,
+      29.88,
+      -4.69,
       0.45
      ]
     },
@@ -1033,7 +1125,7 @@
      "type": "robot_arm",
      "position_W": [
       29.63,
-      -4.69,
+      -4.68,
       0.45
      ]
     },
@@ -1045,8 +1137,8 @@
      },
      "type": "banner",
      "position_W": [
-      27.37,
-      -4.55,
+      27.33,
+      -4.63,
       1.0
      ]
     },
@@ -1058,8 +1150,8 @@
      },
      "type": "board",
      "position_W": [
-      26.3,
-      -3.4,
+      26.29,
+      -3.48,
       0.9
      ]
     },
@@ -1071,7 +1163,7 @@
      },
      "type": "cabinet",
      "position_W": [
-      26.27,
+      26.21,
       -2.7,
       0.55
      ]
@@ -1084,8 +1176,8 @@
      },
      "type": "truss",
      "position_W": [
-      28.03,
-      -2.03,
+      28.08,
+      -2.04,
       2.0
      ]
     },
@@ -1110,8 +1202,8 @@
      },
      "type": "gallery",
      "position_W": [
-      36.25,
-      -5.39,
+      36.15,
+      -5.25,
       1.5
      ]
     },
@@ -1123,8 +1215,8 @@
      },
      "type": "container_booth",
      "position_W": [
-      25.64,
-      2.06,
+      25.77,
+      2.03,
       1.3
      ]
     },
@@ -1136,7 +1228,7 @@
      },
      "type": "column",
      "position_W": [
-      26.02,
+      26.05,
       1.13,
       4.5
      ]
@@ -1219,8 +1311,8 @@
      },
      "type": "machine",
      "position_W": [
-      37.6,
-      -5.5,
+      37.3,
+      -5.55,
       1.6
      ]
     },
@@ -1271,8 +1363,8 @@
      },
      "type": "vehicle",
      "position_W": [
-      32.44,
-      -4.16,
+      32.46,
+      -4.15,
       1.0
      ]
     },
@@ -1284,8 +1376,8 @@
      },
      "type": "robot_arm",
      "position_W": [
-      41.91,
-      -2.85,
+      41.83,
+      -2.86,
       0.9
      ]
     },
@@ -1297,8 +1389,8 @@
      },
      "type": "screen",
      "position_W": [
-      37.43,
-      -4.13,
+      37.21,
+      -4.2,
       0.35
      ]
     },
@@ -1312,7 +1404,7 @@
      "position_W": [
       46.44,
       -1.3,
-      6.72
+      6.68
      ]
     }
    ]
@@ -1385,8 +1477,8 @@
      },
      "type": "table",
      "position_W": [
-      29.28,
-      2.18,
+      29.26,
+      2.16,
       0.45
      ]
     },
@@ -1411,8 +1503,8 @@
      },
      "type": "banner",
      "position_W": [
-      28.3,
-      3.68,
+      28.08,
+      3.64,
       1.25
      ]
     },
@@ -1424,8 +1516,8 @@
      },
      "type": "screen",
      "position_W": [
-      26.4,
-      2.18,
+      28.28,
+      1.93,
       1.0
      ]
     },
@@ -1437,8 +1529,8 @@
      },
      "type": "kiosk",
      "position_W": [
-      27.44,
-      1.43,
+      28.06,
+      1.32,
       0.6
      ]
     },
@@ -1450,8 +1542,8 @@
      },
      "type": "column",
      "position_W": [
-      29.15,
-      1.49,
+      28.3,
+      1.28,
       4.5
      ],
      "bearing_fix": "critic 3a: column was ~15 deg off; re-read -88..-81 (catalogue -100..-95)"
@@ -1464,8 +1556,8 @@
      },
      "type": "machine",
      "position_W": [
-      30.37,
-      10.41,
+      30.52,
+      10.29,
       1.5
      ]
     },
@@ -1477,9 +1569,9 @@
      },
      "type": "crane",
      "position_W": [
-      31.89,
-      3.32,
-      2.38
+      31.74,
+      3.31,
+      2.37
      ]
     }
    ]
@@ -1515,19 +1607,19 @@
     }
    ],
    "position_W": [
-    42.214,
-    4.374,
+    42.218,
+    4.371,
     1.364
    ],
-   "radius": 2.61,
+   "radius": 2.6,
    "stand_W": [
     41.654,
     2.657,
     0.0
    ],
    "look_at_W": [
-    42.214,
-    4.374,
+    42.218,
+    4.371,
     1.264
    ],
    "pano_id": "media_26E4C5CA_287D_9D7B_41A1_7DE8FBDA7B45",
@@ -1557,8 +1649,8 @@
      },
      "type": "robot_cell",
      "position_W": [
-      44.35,
-      5.99,
+      44.38,
+      5.89,
       1.3
      ]
     },
@@ -1570,8 +1662,8 @@
      },
      "type": "robot_cell",
      "position_W": [
-      41.64,
-      4.93,
+      41.72,
+      4.96,
       1.4
      ]
     },
@@ -1583,7 +1675,7 @@
      },
      "type": "fence",
      "position_W": [
-      40.61,
+      40.64,
       3.15,
       0.75
      ]
@@ -1596,8 +1688,8 @@
      },
      "type": "robot_cell",
      "position_W": [
-      38.79,
-      3.22,
+      38.65,
+      3.13,
       1.0
      ]
     },
@@ -1609,8 +1701,8 @@
      },
      "type": "column",
      "position_W": [
-      38.22,
-      1.15,
+      38.27,
+      1.16,
       4.5
      ]
     },
@@ -1623,8 +1715,8 @@
      "type": "barrier",
      "position_W": [
       43.61,
-      -1.27,
-      0.73
+      -1.26,
+      0.76
      ]
     },
     {
@@ -1635,7 +1727,7 @@
      },
      "type": "machine",
      "position_W": [
-      44.75,
+      44.73,
       -5.42,
       1.5
      ]
@@ -1661,9 +1753,9 @@
      },
      "type": "crane",
      "position_W": [
-      44.71,
-      -5.78,
-      7.45
+      44.81,
+      -5.82,
+      7.5
      ]
     }
    ]
@@ -1707,19 +1799,19 @@
     }
    ],
    "position_W": [
-    38.381,
-    7.872,
+    38.382,
+    7.873,
     0.9
    ],
-   "radius": 2.44,
+   "radius": 2.43,
    "stand_W": [
     39.707,
     9.546,
     0.0
    ],
    "look_at_W": [
-    38.381,
-    7.872,
+    38.382,
+    7.873,
     0.6
    ],
    "pano_id": "media_98546404_1FF7_3A44_419A_C578815F6BD0",
@@ -1736,8 +1828,8 @@
      },
      "type": "manipulator",
      "position_W": [
-      41.72,
-      10.34,
+      41.68,
+      10.41,
       1.5
      ]
     },
@@ -1750,7 +1842,7 @@
      "type": "workbench",
      "position_W": [
       38.05,
-      8.46,
+      8.5,
       0.45
      ]
     },
@@ -1763,7 +1855,7 @@
      "type": "conveyor",
      "position_W": [
       40.56,
-      8.75,
+      8.74,
       0.45
      ]
     },
@@ -1788,7 +1880,7 @@
      },
      "type": "board",
      "position_W": [
-      35.89,
+      35.99,
       11.5,
       0.95
      ]
@@ -1802,7 +1894,7 @@
      "type": "cabinet",
      "position_W": [
       37.55,
-      11.89,
+      11.88,
       0.95
      ]
     },
@@ -1814,7 +1906,7 @@
      },
      "type": "pallet",
      "position_W": [
-      39.14,
+      39.09,
       12.29,
       0.5
      ]
@@ -1827,9 +1919,9 @@
      },
      "type": "wall",
      "position_W": [
-      39.15,
-      12.05,
-      1.8
+      39.14,
+      12.07,
+      1.78
      ]
     },
     {
@@ -1840,7 +1932,7 @@
      },
      "type": "robot_cell",
      "position_W": [
-      42.7,
+      42.71,
       9.04,
       1.15
      ]
@@ -1894,20 +1986,20 @@
     }
    ],
    "position_W": [
-    23.462,
-    -2.857,
-    0.981
+    23.463,
+    -2.833,
+    0.982
    ],
    "radius": 2.0,
    "stand_W": [
-    21.775,
-    -3.075,
+    21.825,
+    -3.175,
     0.0
    ],
    "look_at_W": [
-    23.462,
-    -2.857,
-    0.881
+    23.463,
+    -2.833,
+    0.882
    ],
    "pano_id": "media_9D1E5522_9158_699E_41DD_93C853F3CE33",
    "position_quality": "registered_pano_medium",
@@ -1923,8 +2015,8 @@
      },
      "type": "machine",
      "position_W": [
-      23.91,
-      -3.02,
+      23.89,
+      -2.86,
       0.9
      ]
     },
@@ -1936,8 +2028,8 @@
      },
      "type": "robot_arm",
      "position_W": [
-      28.27,
-      -2.86,
+      28.3,
+      -2.5,
       1.5
      ]
     },
@@ -1949,8 +2041,8 @@
      },
      "type": "machine",
      "position_W": [
-      19.28,
-      -3.15,
+      19.32,
+      -3.16,
       0.8
      ]
     },
@@ -1962,7 +2054,7 @@
      },
      "type": "desk",
      "position_W": [
-      20.6,
+      20.58,
       -5.94,
       0.38
      ]
@@ -1975,9 +2067,9 @@
      },
      "type": "barrier",
      "position_W": [
-      20.41,
-      -1.43,
-      0.84
+      20.78,
+      0.24,
+      0.55
      ]
     }
    ]
@@ -2220,20 +2312,20 @@
     }
    ],
    "position_W": [
-    11.515,
-    -2.809,
-    0.945
+    11.543,
+    -2.938,
+    0.9
    ],
-   "radius": 2.14,
+   "radius": 2.06,
    "stand_W": [
-    11.425,
-    -0.975,
+    11.575,
+    -1.175,
     0.0
    ],
    "look_at_W": [
-    11.515,
-    -2.809,
-    0.845
+    11.543,
+    -2.938,
+    0.796
    ],
    "pano_id": null,
    "position_quality": "other_pano_bearing",
@@ -2395,10 +2487,10 @@
    "media": [],
    "position_W": [
     30.495,
-    10.307,
+    10.305,
     0.968
    ],
-   "radius": 2.1,
+   "radius": 2.09,
    "stand_W": [
     30.275,
     8.525,
@@ -2406,7 +2498,7 @@
    ],
    "look_at_W": [
     30.495,
-    10.307,
+    10.305,
     0.868
    ],
    "pano_id": null,

@@ -2,6 +2,10 @@
 // URL parameters: manifest=<url> (default web_data/manifest.json), quality=low|medium|high, lang=de|en,
 //   autostart=1 (skip the start screen; no intro unless intro=1), intro=0|1, nolock=1 (never request pointer lock),
 //   spawn=<station id>, debug=0..3, proj=0|1
+// v3 (web_v3): splats=1|0 (optional Gaussian-splat photo layer from the hand-held hall video, manifest.splat_layers;
+//   0 forces it off, 1 forces it on; without it: on by itself only when the layer's manifest default is true and the
+//   device passes splatAutoOk()), station=present|tour (manifest.station_state: the site opens in its default, normally
+//   the present-day G1 station; tour = the state in the virtual tour)
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
@@ -14,6 +18,7 @@ import { Input } from './input.js';
 import { Stations } from './stations.js';
 import { Minimap } from './minimap.js';
 import { ProjectiveTexturing, makePanoSphere, DEPTH_LAYER, PANO_UV_GLSL } from './projective.js';
+import { SplatLayers, SPLAT_QUALITY, installHallHooks } from './splats.js';
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
@@ -31,7 +36,8 @@ const QUALITY = {
 };
 const COARSE = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 const LOW_MEM = !!(navigator.deviceMemory && navigator.deviceMemory <= 4);
-const maxPixelRatio = (q) => Math.min(window.devicePixelRatio || 1, QUALITY[q].pixelRatio, COARSE ? 1.5 : 4);
+const maxPixelRatio = (q) => Math.min(window.devicePixelRatio || 1, QUALITY[q].pixelRatio, COARSE ? 1.5 : 4,
+  splatLayers && splatLayers.shown ? SPLAT_QUALITY[q].pixelRatio : 4);
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
 const smooth = (a, b, x) => { const k = clamp01((x - a) / (b - a)); return k * k * (3 - 2 * k); };
 const easeInOut = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
@@ -40,13 +46,17 @@ const lerpAngle = (a, b, k) => { let d = (b - a) % (2 * Math.PI); if (d > Math.P
 // ------------------------------------------------------------------------------------------------ settings
 const SETTINGS_KEY = 'zema_twin_settings_v1';
 const settings = Object.assign({ lang: defaultLang(), quality: 'high', sensitivity: 1.0, fov: 70, invertY: false,
-  proj: true, showFps: false, debug: 0 }, readJson(SETTINGS_KEY));
+  proj: true, showFps: false, debug: 0, splats: false }, readJson(SETTINGS_KEY));
 if (params.get('quality') && QUALITY[params.get('quality')]) settings.quality = params.get('quality');
 else if (!settings.qualityChosen && (COARSE || LOW_MEM)) settings.quality = 'medium';
 const DEBUG_KEYS = params.has('debug');   // free flight (F, no collision) only with ?debug=...
 if (params.get('lang')) settings.lang = params.get('lang');
 if (params.get('debug')) settings.debug = +params.get('debug');
 if (params.get('proj')) settings.proj = params.get('proj') !== '0';
+const SPLATS_FORCED_OFF = params.get('splats') === '0';
+if (params.has('splats')) settings.splats = params.get('splats') !== '0';
+/** The user's own splat choice (URL, G key, button, checkbox) beats the automatic default. */
+const splatsChosen = () => params.has('splats') || !!settings.splatsChosen;
 function readJson(k) { try { return JSON.parse(localStorage.getItem(k) || '{}'); } catch (_) { return {}; } }
 function saveSettings() { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (_) { /* ignore */ } }
 setLang(settings.lang);
@@ -58,6 +68,7 @@ if (COARSE) {
 // ------------------------------------------------------------------------------------------------ renderer
 const canvas = $('view');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+let splatLayers = null;   // set below (maxPixelRatio reads it)
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.NoToneMapping;
 renderer.setPixelRatio(maxPixelRatio(settings.quality));
@@ -80,7 +91,30 @@ const input = new Input(canvas, { sensitivity: settings.sensitivity });
 input.invertY = settings.invertY;
 input.allowLock = !params.has('nolock');
 const minimap = new Minimap($('minimap'), $('bigmap-canvas'));
-const proj = new ProjectiveTexturing(renderer, scene, { maxActive: QUALITY[settings.quality].panos, cubeSize: QUALITY[settings.quality].cube });
+
+/** v3 review fix: the splat renderer (Spark) can leave a PIXEL_PACK buffer bound; a synchronous readPixels into a
+ * typed array then fails with INVALID_OPERATION (seen on SwiftShader). Unbind it before every CPU readback. */
+function unbindPixelPack(gl) {
+  if (gl && typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext) {
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+  }
+}
+splatLayers = new SplatLayers({ renderer, scene, onProgress: splatProgress, onState: splatState, onHooks: setHallHooks });
+/** v3: compile the splat hooks (free-space discard, owned floor as backdrop) into the hall materials, or remove them. */
+function setHallHooks(on) {
+  const mats = new Set();
+  for (const root of [state.hallRoot, state.extraRoot]) {
+    root.traverse((o) => { if (o.isMesh) for (const m of [o.userData.origMaterial, o.userData.projMaterial, o.material]) if (m && m !== depthOnlyMat) mats.add(m); });
+  }
+  for (const m of mats) {
+    m.defines = m.defines || {};
+    const has = 'SPLAT_HOOKS' in m.defines;
+    if (on && !has) { m.defines.SPLAT_HOOKS = ''; m.needsUpdate = true; }
+    if (!on && has) { delete m.defines.SPLAT_HOOKS; m.needsUpdate = true; }
+  }
+}
+const proj = new ProjectiveTexturing(renderer, scene, { maxActive: QUALITY[settings.quality].panos, cubeSize: QUALITY[settings.quality].cube,
+  hallUniforms: splatLayers.hallUniforms });
 proj.pinned = new Set();
 // two spheres so that panoramas can cross-fade into each other
 const spheres = [makePanoSphere(), makePanoSphere()];
@@ -92,10 +126,15 @@ const state = {
   stations: null, mode: 'walk', pano: null, sphere: null, savedPose: null, ready: false, started: false,
   fps: 0, fpsHistory: [], frame: 0, errors: [], hallLod: -1, timings: {}, camPos: new THREE.Vector3(),
   composite: 'off', userOpacity: 1, nav: null, overlaysHidden: false, intro: null, transitions: 0,
+  stationState: 'tour', extraRoot: new THREE.Group(), extraColliders: [], hiddenHallNodes: [], robotUrl: null,
+  // v3: while a tour photo is shown in a non-tour station state, the station is drawn in its tour state (tourEra)
+  tourEra: false, tourRobot: null, tourRobotJob: null, tourRobotFailed: false,
 };
+state.extraRoot.name = 'extraMeshes';
+scene.add(state.extraRoot);
 state.hallRoot.name = 'hall';
 scene.add(state.hallRoot);
-window.__twin = { state, THREE, scene, camera, renderer, player, proj, input, spheres };
+window.__twin = { state, THREE, scene, camera, renderer, player, proj, input, spheres, splatLayers };
 
 // ------------------------------------------------------------------------------------------------ loading
 const progress = { steps: {}, set(key, frac, label) { this.steps[key] = frac; this.render(label); },
@@ -103,8 +142,11 @@ const progress = { steps: {}, set(key, frac, label) { this.steps[key] = frac; th
     const w = { manifest: 0.05, stations: 0.05, collider: 0.3, hall0: 0.6 };
     let s = 0; for (const k in w) s += w[k] * (this.steps[k] || 0);
     $('load-bar').style.width = `${Math.round(s * 100)}%`;
-    if (label) $('load-text').textContent = `${t('loading')} ${label}`;
+    // after first-playable the start card says so; background loads (detail LOD, station, robot) are named after it
+    if (label) $('load-text').textContent = (state.ready && !state.loadedAll ? `${t('ready')} · ` : '') + `${t('loading')} ${label}`;
+    if (label && state.loadedAll) $('load-text').textContent = readyText();
   } };
+function readyText() { return t('ready') + (state.manifest && state.manifest.placeholder ? ` · ${t('placeholder')}` : ''); }
 
 function loadGlb(url, key, label) {
   return new Promise((resolve, reject) => {
@@ -129,9 +171,9 @@ function boxToGlMatrix(b) {
 }
 
 /** Walkable-floor grid (manifest.nav: PNG, white = walkable, row 0 = north) for teleport snapping. */
-async function loadNav(nv, U) {
+async function loadNav(nv, U, image = nv.image) {
   const img = new Image();
-  img.src = U(nv.image);
+  img.src = U(image);
   await img.decode();
   const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
   const ctx = c.getContext('2d', { willReadFrequently: true });
@@ -139,7 +181,18 @@ async function loadNav(nv, U) {
   const px = ctx.getImageData(0, 0, c.width, c.height).data;
   const free = new Uint8Array(c.width * c.height);
   for (let i = 0; i < free.length; i++) free[i] = px[i * 4] > 127 ? 1 : 0;
-  return { free, cols: c.width, rows: c.height, cell: nv.cell_m, x0: nv.bounds_W.min[0], y1: nv.bounds_W.max[1] };
+  return { free, cols: c.width, rows: c.height, cell: nv.cell_m, x0: nv.bounds_W.min[0], y1: nv.bounds_W.max[1], image };
+}
+/** v3: the nav grid of a station state (manifest.nav.variants[state].image; else manifest.nav.image), cached. */
+function loadNavFor(st) {
+  const nv = state.manifest && state.manifest.nav;
+  if (!nv || !nv.image) return Promise.resolve(null);
+  const image = ((nv.variants || {})[st] || {}).image || nv.image;
+  state.navCache = state.navCache || new Map();
+  if (!state.navCache.has(image)) {
+    state.navCache.set(image, loadNav(nv, state.U, image).catch((e) => { console.warn('nav', e); state.navCache.delete(image); return null; }));
+  }
+  return state.navCache.get(image);
 }
 
 /** Nearest walkable W point to (x, y) within maxM (null if none). */
@@ -169,12 +222,22 @@ async function load() {
   state.baseUrl = manifestUrl;
   const U = (u) => new URL(u, manifestUrl).href;
   applyTitles();
+  // v3 optional layers (absent keys = v2 behaviour)
+  state.U = U;
+  splatLayers.setDescs((manifest.splat_layers || []).map((d) => ({ ...d, url: U(d.url),
+    ...(d.free_space && d.free_space.url ? { free_space: { ...d.free_space, url: U(d.free_space.url) } } : {}) })));
+  state.stationState = initialStationState(manifest);
+  $('row-splats').hidden = !splatLayers.available;
+  $('btn-splats').hidden = !splatLayers.available;
+  $('row-station').hidden = !manifest.station_state;
+  $('set-station').value = state.stationState;
 
   // stations
   const stUrl = manifest.stations && (manifest.stations.url || manifest.stations);
   const stData = stUrl ? await fetchJson(U(stUrl)).catch((e) => { console.warn(e); return { stations: [] }; }) : { stations: [] };
   state.stations = new Stations(scene, U(stUrl || './'), 'zema_twin_discovered:' + (manifest.id || manifestUrl));
   state.stations.set(stData);
+  applyStationVariants(state.stationState);
   state.stations.onChange = updateCounter;
   state.stations.onDiscover = (s) => {
     const c = state.stations.count();
@@ -191,7 +254,7 @@ async function load() {
   const [colliders, hall0, nav] = await Promise.all([
     Promise.all(colliderUrls.map((u) => loadGlb(U(u), 'collider', t('load_collider')))),
     loadGlb(U(hallList[0].url), 'hall0', t('load_hall')),
-    manifest.nav && manifest.nav.image ? loadNav(manifest.nav, U).catch((e) => { console.warn('nav', e); return null; }) : null,
+    loadNavFor(state.stationState),
   ]);
   state.nav = nav;
   for (const g of colliders) {
@@ -200,9 +263,11 @@ async function load() {
       if (!o.isMesh) return;
       o.geometry.computeBoundsTree();
       o.visible = false;
+      o.userData.hallNode = hallNodeOf(o);
       state.colliders.push(o);
     });
   }
+  state.allHallColliders = [...state.colliders];
   state.timings.collider_tris = state.colliders.reduce((s, m) => s + (m.geometry.index ? m.geometry.index.count / 3 : 0), 0);
   setHall(hall0.scene, hallList[0].lod || 0);
   player.colliders = state.colliders;
@@ -232,9 +297,18 @@ async function load() {
   if (mm.image) await minimap.loadImage(U(mm.image), mm.bounds_W || { min: bw.min, max: bw.max });
   else {
     const wasProj = proj.enabled; proj.setEnabled(false);
+    unbindPixelPack(renderer.getContext());   // the minimap readback (minimap.js is the v2 file)
     minimap.renderBackground(renderer, scene, { min: bw.min, max: bw.max }, (bw.min[2] || 0) + (mm.clip_height_m || 2.6), mm.px_per_m || 16,
       DEPTH_LAYER, (bw.min[2] || 0) - 0.5);
     proj.setEnabled(wasProj);
+  }
+
+  // v3: a non-tour station state (the present-day default) replaces hall nodes and their colliders: start it now and
+  // place the player only once its colliders and nav grid are in (the visual patch keeps loading in the background)
+  let stationJob = null;
+  if (state.stationState !== 'tour') {
+    stationJob = applyStationState(state.stationState).catch((e) => console.warn('station', e));
+    await Promise.race([state.stationColliderReady.catch(() => {}), stationJob]);   // a failed station never blocks the game
   }
 
   // spawn
@@ -250,7 +324,7 @@ async function load() {
   }
   state.timings.first_playable_ms = Math.round(performance.now() - t0);
   state.ready = true;
-  $('load-text').textContent = t('ready') + (manifest.placeholder ? ` · ${t('placeholder')}` : '');
+  $('load-text').textContent = readyText();
   $('start-btn').hidden = !intro;
   $('start-direct').hidden = false;
   if (!intro) $('start-direct').classList.add('primary');
@@ -264,10 +338,17 @@ async function load() {
     if ((h.lod || 0) > maxLod) continue;
     rest.push(loadGlb(U(h.url), 'hall' + h.lod, t('load_hall_hi')).then((g) => { setHall(g.scene, h.lod || 0); }));
   }
-  if (manifest.robot && manifest.robot.url) rest.push(loadRobot(manifest.robot, U).catch((e) => console.warn('robot', e)));
+  const robot0 = manifest.robot && manifest.robot.url ? robotFor(state.stationState) : null;
+  if (robot0 && robot0.url !== state.robotUrl) rest.push(loadRobot(robot0, U).catch((e) => console.warn('robot', e)));
+  if (stationJob) rest.push(stationJob);
   await Promise.all(rest);
+  if (splatLayers.available && !SPLATS_FORCED_OFF && (splatsChosen() ? settings.splats : splatsWantedByDefault())) {
+    state.splatsAuto = !splatsChosen();
+    setSplats(true, false);
+  }
   state.timings.all_loaded_ms = Math.round(performance.now() - t0);
   state.loadedAll = true;
+  $('load-text').textContent = readyText();
 }
 
 function applyTitles() {
@@ -284,7 +365,10 @@ function fillFeatures() {
   ul.textContent = '';
   const n = state.stations ? state.stations.list.length : 0;
   const robot = state.stations && state.stations.list.find((s) => s.group === 'robot');
-  for (const [k, cls] of [['feat_1', ''], ['feat_2', ''], ...(robot ? [['feat_3', 'violet']] : [])]) {
+  const m = state.manifest || {};
+  const v3 = !!(m.station_state || (m.splat_layers && m.splat_layers.length));   // v3 data: tour + hand-held video
+  for (const [k, cls] of [['feat_1', ''], [v3 ? 'feat_2_video' : 'feat_2', ''],
+    ...(robot ? [[m.station_state ? 'feat_3_present' : 'feat_3', 'violet']] : [])]) {
     const li = document.createElement('li'); li.textContent = t(k).replace('{t}', n); if (cls) li.className = cls; ul.appendChild(li);
   }
   document.querySelectorAll('.lang-switch [data-lang]').forEach((b) => b.classList.toggle('on', b.dataset.lang === getLang()));
@@ -323,28 +407,45 @@ function setHall(root, lod) {
       }
     });
   }
-  root.traverse((o) => { if (o.isMesh) { o.frustumCulled = true; } });
+  root.traverse((o) => { if (o.isMesh) { o.frustumCulled = true; installHallHooks(o.material, splatLayers.hallUniforms); } });
   state.hallRoot.add(root);
+  applyHallNodeVisibility(root);
+  if (splatLayers.hooksOn) setHallHooks(true);
   state.hallLod = lod;
   state.hallTris = 0;
   root.traverse((o) => { if (o.isMesh && o.geometry.index) state.hallTris += o.geometry.index.count / 3; });
   if (state.ready) { proj.attach(root); proj.invalidateDepth(); applyComposite(state.composite); }
 }
 
-async function loadRobot(r, U) {
-  const g = await loadGlb(U(r.url), 'robot', t('load_robot'));
+/** Robot glb -> posed root group (not yet in the scene) + its look ('v3' = own calibrated materials, 'v2' = satin). */
+async function fetchRobot(r, U, key = 'robot') {
+  const g = await loadGlb(U(r.url), key, t('load_robot'));
   const root = new THREE.Group();
   root.name = 'robot';
   root.add(g.scene);
   const pose = r.pose_W || { t_W: [0, 0, 0], yaw_deg: 0 };
   root.position.set(...wToGl(pose.t_W));
   root.rotation.y = THREE.MathUtils.degToRad(pose.yaw_deg || 0);
-  g.scene.traverse((o) => {
-    if (o.isMesh && o.material) {
-      // the G1 glb is lit (MeshStandard); give it the satin look
-      if (o.material.isMeshStandardMaterial) { o.material.metalness = 0.55; o.material.roughness = 0.38; }
-    }
-  });
+  // the v2 G1 glb is lit (MeshStandard) with one grey material: give it the satin look. v3 glbs (STATION stream:
+  // asset.extras.look "v3...", materials "g1_*") carry their own calibrated metal / roughness: keep them.
+  const ex = (g.asset && g.asset.extras) || {};
+  let v3Look = String(ex.look || '').startsWith('v3');
+  g.scene.traverse((o) => { if (o.isMesh && o.material && String(o.material.name || '').startsWith('g1_')) v3Look = true; });
+  if (!v3Look) {
+    g.scene.traverse((o) => {
+      if (o.isMesh && o.material && o.material.isMeshStandardMaterial) { o.material.metalness = 0.55; o.material.roughness = 0.38; }
+    });
+  }
+  return { root, look: v3Look ? 'v3' : 'v2', url: r.url };
+}
+
+async function loadRobot(r, U) {
+  state.robotUrl = r.url;
+  const o = await fetchRobot(r, U);
+  if (state.robotUrl !== r.url) { disposeTree(o.root); return; }     // superseded by a station-state switch while loading
+  if (state.robot) removeRobot();
+  const root = o.root;
+  state.robotLook = o.look;
   scene.add(root);
   root.updateMatrixWorld(true);
   state.robot = root;
@@ -364,6 +465,229 @@ async function loadRobot(r, U) {
     state.robotCollider = m;
   }
   applyComposite(state.composite);
+}
+
+function disposeTree(r) {
+  r.traverse((o) => { if (o.isMesh) { o.geometry.dispose(); if (o.material && o.material.dispose) o.material.dispose(); } });
+}
+
+function removeRobot() {
+  const r = state.robot;
+  if (!r) return;
+  scene.remove(r);
+  disposeTree(r);
+  if (state.robotCollider) {
+    const i = state.colliders.indexOf(state.robotCollider);
+    if (i >= 0) state.colliders.splice(i, 1);
+    state.robotCollider = null;
+  }
+  state.robot = null;
+}
+
+// ------------------------------------------------------------------------------------------------ v3: station state
+// manifest.station_state {default, url_param}, extra_meshes[] {id, url, collider_url, variant, hide_hall_nodes},
+// robot_variants[] {id, url, variant, pose_W?}. "tour" = v2 (G1 at the cabinet spot); "present_day" = today's
+// station patch replaces the hall nodes named in hide_hall_nodes (visual LODs and collider) and the robot variant.
+function normStationState(v) {
+  if (v === 'present' || v === 'present_day' || v === 'today' || v === 'heute') return 'present_day';
+  if (v === 'tour') return 'tour';
+  return null;
+}
+function initialStationState(m) {
+  const cfg = m.station_state;
+  if (!cfg) return 'tour';     // v2 manifest: only the tour state exists
+  // the present-day station is the default whenever the manifest describes one (cfg.default may say otherwise)
+  return normStationState(params.get(cfg.url_param || 'station')) || normStationState(cfg.default) || 'present_day';
+}
+function hideableNodeNames() {
+  const all = new Set();
+  for (const e of (state.manifest && state.manifest.extra_meshes) || []) for (const n of e.hide_hall_nodes || []) all.add(n);
+  return all;
+}
+/** The station state the 3D scene is drawn in: the tour state while a tour photo is shown (tourEra), else the
+ *  chosen one. Colliders and the nav grid always follow state.stationState. */
+function drawnStationState() { return state.tourEra ? 'tour' : state.stationState; }
+function hiddenNodeNames(st = drawnStationState()) {
+  const hid = new Set();
+  for (const e of (state.manifest && state.manifest.extra_meshes) || []) {
+    if (normStationState(e.variant) === st) for (const n of e.hide_hall_nodes || []) hid.add(n);
+  }
+  return hid;
+}
+/** Name of the hideable node (e.g. "StationRegion") this object belongs to, or null. */
+function hallNodeOf(o) {
+  const names = hideableNodeNames();
+  for (let p = o; p; p = p.parent) if (names.has(p.name)) return p.name;
+  return null;
+}
+function applyHallNodeVisibility(root, st = drawnStationState()) {
+  const names = hideableNodeNames();
+  if (!names.size) return;
+  const hid = hiddenNodeNames(st);
+  root.traverse((o) => { if (names.has(o.name)) o.visible = !hid.has(o.name); });
+}
+function rebuildColliders() {
+  const hid = hiddenNodeNames(state.stationState);
+  const keep = (state.allHallColliders || []).filter((o) => !(o.userData.hallNode && hid.has(o.userData.hallNode)));
+  state.colliders.length = 0;
+  state.colliders.push(...keep, ...state.extraColliders);
+  if (state.robotCollider) state.colliders.push(state.robotCollider);
+}
+/** v3: stations.json entries with "variants" {tour: {...}, present_day: {...}} (the G1): copy the fields of the
+ *  station state onto the entry and move its marker (gem, floor ring, beam) and discover ring with it. */
+const VARIANT_KEYS = ['title', 'short', 'description', 'media', 'position_W', 'radius', 'stand_W', 'look_at_W',
+  'position_quality', 'position_note', 'pano_id'];
+function applyStationVariants(st) {
+  if (!state.stations) return;
+  for (const s of state.stations.list) {
+    const v = s.variants && s.variants[st];
+    if (!v) continue;
+    for (const k of VARIANT_KEYS) if (k in v) s[k] = v[k];
+  }
+  placeVariantMarkers(drawnStationState());
+  if (state.infoStation && !$('panel-info').hidden) openInfo(state.infoStation);
+}
+/** Marker (gem, floor ring, beam) of the entries with variants at their position in station state `st` (the card
+ *  fields stay those of the chosen state; tourEra draws the tour markers in the tour photo). */
+function placeVariantMarkers(st) {
+  if (!state.stations) return;
+  for (const s of state.stations.list) {
+    if (!s.variants || !s.gem) continue;
+    const v = s.variants[st] || {};
+    const p = new THREE.Vector3(...wToGl(v.position_W || s.position_W));
+    const radius = v.radius ?? s.radius;
+    s.pos.copy(p);
+    s.gem.position.set(p.x, p.y + 0.6, p.z);
+    const floorY = s.floor_z_W ?? 0;
+    s.ring.position.set(p.x, floorY + 0.02, p.z);
+    s.ring.scale.set(radius, 1, radius);
+    const top = p.y + 0.6;
+    s.beam.scale.set(1, Math.max(top - floorY, 0.1), 1);
+    s.beam.position.set(p.x, (top + floorY) / 2, p.z);
+  }
+}
+function robotFor(st) {
+  const m = state.manifest;
+  const v = (m.robot_variants || []).find((x) => normStationState(x.variant) === st);
+  if (!v || !m.robot) return m.robot;
+  return { ...m.robot, url: v.url, pose_W: v.pose_W || m.robot.pose_W, variant: v.id };
+}
+async function applyStationState(st) {
+  const m = state.manifest;
+  state.stationState = st;
+  // extra meshes of the previous state out
+  for (const c of [...state.extraRoot.children]) {
+    state.extraRoot.remove(c);
+    c.traverse((o) => { if (o.isMesh) { o.geometry.dispose(); const mt = o.userData.origMaterial || o.material; if (mt.map) mt.map.dispose(); mt.dispose(); } });
+  }
+  state.extraColliders = [];
+  rebuildColliders();
+  applyHallNodeVisibility(state.hallRoot);
+  const jobs = [], colliderJobs = [];
+  for (const e of m.extra_meshes || []) {
+    if (normStationState(e.variant) !== st) continue;
+    jobs.push(loadGlb(state.U(e.url), 'extra', t('load_station')).then((g) => {
+      if (state.stationState !== st) return;
+      g.scene.name = 'extra:' + e.id;
+      g.scene.traverse((o) => {
+        if (!o.isMesh) return;
+        o.userData.origMaterial = o.material;
+        installHallHooks(o.material, splatLayers.hallUniforms);
+      });
+      state.extraRoot.add(g.scene);
+      if (splatLayers.hooksOn) setHallHooks(true);
+    }));
+    if (e.collider_url) {
+      colliderJobs.push(loadGlb(state.U(e.collider_url), 'extra_collider', t('load_station')).then((g) => {
+        if (state.stationState !== st) return;
+        g.scene.updateMatrixWorld(true);
+        g.scene.traverse((o) => {
+          if (!o.isMesh) return;
+          o.geometry.computeBoundsTree();
+          o.visible = false;
+          state.extraColliders.push(o);
+        });
+        rebuildColliders();
+      }));
+    }
+  }
+  const r = robotFor(st);
+  if (r && r.url && r.url !== state.robotUrl) jobs.push(loadRobot(r, state.U));
+  applyStationVariants(st);
+  colliderJobs.push(loadNavFor(st).then((n) => { if (state.stationState === st && n) state.nav = n; }));
+  // the walkable state (colliders + nav grid) is ready before the visuals: load() waits for it before placing the player
+  state.stationColliderReady = Promise.all(colliderJobs);
+  await Promise.all([...jobs, state.stationColliderReady]);
+  proj.invalidateDepth();
+  applyComposite(state.composite);
+  $('set-station').value = st;
+}
+async function setStationState(v, announce = true) {
+  const st = normStationState(v);
+  if (!st || !state.manifest || !state.manifest.station_state || st === state.stationState) return state.stationState;
+  await applyStationState(st);
+  if (announce) toast(t(st === 'present_day' ? 'station_present_on' : 'station_tour_on'));
+  return st;
+}
+
+// ------------------------------------------------------------------------------------------------ v3: splat layer
+/** How strongly the tour photos are projected at the camera (1 within projection.cam_near of a projectable tour spot,
+ *  0 beyond cam_far, as the projective material's camera fade; the layer's view_fade.tour_m overrides the radii).
+ *  Near the tour spots the tour stays the main source:
+ *  the splat layer and its hall hooks give way there. */
+function tourPhotoStrength() {
+  if (!proj.enabled || !proj.panos.length || proj.camNear > 1e5) return 0;
+  const [n0, n1] = splatLayers.tourFadeM || [proj.camNear, proj.camFar];
+  let d = Infinity;
+  for (const p of proj.panos) {
+    if (!p.project) continue;
+    d = Math.min(d, Math.hypot(p.position.x - camera.position.x, p.position.z - camera.position.z));
+  }
+  const k = Math.min(1, Math.max(0, (d - n0) / Math.max(n1 - n0, 1e-3)));
+  return 1 - k * k * (3 - 2 * k);
+}
+function splatProgress(frac, loaded, total) {
+  const el = $('splat-status');
+  el.hidden = false;
+  el.textContent = `✦ ${t('splats_loading')} ${(loaded / 1e6).toFixed(0)}${total ? ' / ' + (total / 1e6).toFixed(0) : ''} MB`;
+}
+function splatState(st) {
+  const el = $('splat-status');
+  if (st === 'loading') { el.hidden = false; if (!el.textContent) el.textContent = `✦ ${t('splats_loading')}`; }
+  else if (st === 'error') { el.hidden = false; el.textContent = `✦ ${t('splats_error')}`; }
+  else el.hidden = true;
+  $('btn-splats').classList.toggle('on', splatLayers.wanted);
+  $('set-splats').checked = splatLayers.wanted;
+}
+/** v3: may the photo layer switch on by itself (manifest default true)? Only on a capable desktop: no touch / coarse
+ *  pointer, no low-memory device, quality medium or high, WebGL2 on a hardware GPU with large textures. The URL
+ *  (?splats=0|1), the G key, the ✦ button and the settings checkbox always win (splatsChosen). */
+function splatAutoOk() {
+  if (COARSE || LOW_MEM || settings.quality === 'low') return false;
+  const gl = renderer.getContext();
+  if (!(typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext)) return false;
+  if (/swiftshader|llvmpipe|softpipe|software|basic render|mesa offscreen/i.test(String(rendererName() || ''))) return false;
+  if (gl.getParameter(gl.MAX_TEXTURE_SIZE) < 8192) return false;
+  const fs = ((state.manifest && state.manifest.splat_layers) || [])[0]?.free_space;
+  if (fs && fs.dims && gl.getParameter(gl.MAX_3D_TEXTURE_SIZE) < Math.max(...fs.dims)) return false;
+  if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) return false;
+  return true;
+}
+function splatsWantedByDefault() {
+  const d = ((state.manifest && state.manifest.splat_layers) || [])[0];
+  return !!(d && d.default === true) && !autoS.off && splatAutoOk();
+}
+async function setSplats(on, announce = true) {
+  if (!splatLayers.available) { if (announce && on) toast(t('splats_none')); return false; }
+  if (announce) { settings.splats = !!on; settings.splatsChosen = true; saveSettings(); }
+  splatLayers.setVisible(state.composite === 'off');
+  if (on && announce) toast(`✦ ${t('splats_loading')} …`);
+  const ok = await splatLayers.setWanted(on);
+  splatLayers.setQuality(settings.quality);
+  renderer.setPixelRatio(maxPixelRatio(settings.quality));
+  onResize();
+  if (announce) toast(t(ok ? 'splats_on' : (on ? 'splats_error' : 'splats_off')));
+  return ok;
 }
 
 // ------------------------------------------------------------------------------------------------ UI
@@ -392,7 +716,14 @@ function openInfo(s) {
   const pb = $('info-pano');
   const pano = s.pano_id && proj.byId.get(s.pano_id);
   pb.hidden = !pano;
-  pb.onclick = () => { closePanels(); enterPano(s.pano_id); };
+  // v3: the G1's tour photo in a non-tour state shows the station's earlier (tour) state: say so on the button, and
+  // look at the station's place in that photo
+  const tv = s.variants && s.variants.tour;
+  const earlier = !!(tv && state.manifest.station_state && state.stationState !== 'tour');
+  pb.dataset.i18n = earlier ? 'view_pano_tour' : 'view_pano';
+  pb.textContent = t(pb.dataset.i18n);
+  const look = (earlier && (tv.look_at_W || tv.position_W)) || s.look_at_W || s.position_W || null;
+  pb.onclick = () => { closePanels(); enterPano(s.pano_id, look); };
   state.infoStation = s;
   openPanel('panel-info');
 }
@@ -434,6 +765,7 @@ function teleportToW(xW, yW) {
 function fillHelp() {
   const rows = [['W A S D / ↑ ← ↓ →', 'k_move'], [t('key_mouse'), 'k_look'], ['Shift', 'k_run'], [t('key_space'), 'k_jump'],
     ['E', 'k_info'], ['M', 'k_map'], ['P', 'k_pano'], ['[ / ]', 'k_panocycle'], ['T', 'k_proj'],
+    ...(splatLayers.available ? [['G', 'k_splats']] : []),
     ...(DEBUG_KEYS ? [['F', 'k_fly']] : []), ['Tab', 'k_stations'], ['H', 'k_help'], ['Esc', 'k_esc']];
   const tb = $('help-table'); tb.textContent = '';
   for (const [k, d] of rows) {
@@ -470,6 +802,7 @@ function wireUi() {
   $('discovered').addEventListener('click', showStations);
   $('btn-settings').addEventListener('click', () => openPanel('panel-settings'));
   $('btn-help').addEventListener('click', () => { fillHelp(); openPanel('panel-help'); });
+  $('set-help').addEventListener('click', () => { fillHelp(); openPanel('panel-help'); });
   $('btn-map').addEventListener('click', toggleBigMap);
   $('btn-pano').addEventListener('click', () => (state.mode === 'pano' ? exitPano() : enterPano()));
   $('btn-proj').addEventListener('click', toggleProj);
@@ -498,8 +831,15 @@ function wireUi() {
   sl.addEventListener('change', () => setLanguage(sl.value));
   sq.addEventListener('change', () => {
     settings.quality = sq.value; if (!autoQ.applying) settings.qualityChosen = true; saveSettings();
+    splatLayers.setQuality(settings.quality);
     renderer.setPixelRatio(maxPixelRatio(settings.quality));
     onResize(); applyProjSettings();
+    // automatic photo layer (no own choice): follows the quality (off on low, on again on medium / high)
+    if (splatLayers.available && !splatsChosen() && state.loadedAll && !autoS.off) {
+      const w = splatsWantedByDefault();
+      state.splatsAuto = w;
+      if (w !== splatLayers.wanted) setSplats(w, false);
+    }
   });
   ss.addEventListener('input', () => { settings.sensitivity = +ss.value; input.sensitivity = settings.sensitivity; saveSettings(); });
   sf.addEventListener('input', () => { settings.fov = +sf.value; camera.fov = settings.fov; camera.updateProjectionMatrix(); saveSettings(); });
@@ -507,6 +847,12 @@ function wireUi() {
   sp.addEventListener('change', () => { settings.proj = sp.checked; applyProjSettings(); saveSettings(); });
   sfps.addEventListener('change', () => { settings.showFps = sfps.checked; $('fps').hidden = !sfps.checked; saveSettings(); });
   sd.addEventListener('change', () => { settings.debug = +sd.value; proj.setDebug(settings.debug); saveSettings(); });
+  const ssp = $('set-splats'), sst = $('set-station');
+  ssp.checked = !!settings.splats && !SPLATS_FORCED_OFF;
+  ssp.addEventListener('change', () => setSplats(ssp.checked));
+  $('btn-splats').addEventListener('click', () => setSplats(!splatLayers.wanted));
+  sst.addEventListener('change', () => setStationState(sst.value));
+  input.on('KeyG', () => { if (splatLayers.available && state.mode !== 'intro') setSplats(!splatLayers.wanted); });
 
   input.on('KeyM', () => { if (state.mode !== 'intro') toggleBigMap(); });
   input.on('KeyP', () => { if (state.mode === 'pano') exitPano(); else if (state.mode === 'walk') enterPano(); });
@@ -600,6 +946,8 @@ function applyComposite(mode) {
   const p = state.pano;
   const photoOnly = !!(p && p.src.photo_only);
   const full = mode === 'full';
+  const tourEra = wantTourEra(mode);
+  setTourEra(tourEra);
   for (const s of spheres) {
     const m = s.material;
     m.transparent = !full || s !== state.sphere;
@@ -611,12 +959,68 @@ function applyComposite(mode) {
   proj.setEnabled(proj.enabled);
   if (full && !photoOnly) for (const o of proj.meshes) o.material = depthOnlyMat;
   state.hallRoot.visible = !(full && photoOnly);
+  // the present-day station patch is not in any tour photo: hidden while one is shown (tourEra), not depth-only
+  state.extraRoot.visible = !(full && photoOnly) && !tourEra;
+  state.extraRoot.traverse((o) => { if (o.isMesh) o.material = full && !photoOnly ? depthOnlyMat : o.userData.origMaterial; });
+  if (splatLayers) {
+    const wasShown = splatLayers.shown;
+    splatLayers.setVisible(mode === 'off');
+    if (wasShown !== splatLayers.shown) { renderer.setPixelRatio(maxPixelRatio(settings.quality)); onResize(); }
+  }
   const show3d = !(full && photoOnly) && !state.overlaysHidden;
-  if (state.robot) state.robot.visible = !(full && photoOnly) && !state.robotHidden;
+  const robotOn = !(full && photoOnly) && !state.robotHidden;
+  if (state.robot) state.robot.visible = robotOn && !tourEra;
+  // tourEra: the tour robot variant at its tour pose (made for these photos); hidden until it has loaded
+  if (state.tourRobot) state.tourRobot.root.visible = robotOn && tourEra;
   if (state.stations) state.stations.group.visible = show3d;
   $('pano-opacity-wrap').hidden = photoOnly;
-  $('pano-note').hidden = !photoOnly;
-  $('pano-note').textContent = photoOnly ? t('photo_only') : '';
+  const tourNote = tourEra && panoShowsVariantStation(p);
+  $('pano-note').hidden = !photoOnly && !tourNote;
+  $('pano-note').textContent = photoOnly ? t('photo_only') : (tourNote ? t('pano_tour_state') : '');
+}
+
+/** v3: a tour photo shows the hall on the tour day. While one is the picture (composite 'full' or 'blend') in a
+ *  non-tour station state, the 3D scene is drawn in the tour state: the hall nodes the present-day patch replaces
+ *  (depth for the occlusion in 'full'), no patch, the tour robot variant at its tour pose and the tour markers.
+ *  Walking, colliders and the nav grid stay in the chosen state. Review fix: the present-day G1 (harness pose) hung
+ *  in mid-air in the VADER photo, without its gantry, mat and posts. */
+function wantTourEra(mode) {
+  const p = state.pano;
+  return !!(p && !p.src.photo_only && (mode === 'full' || mode === 'blend') && state.manifest
+    && state.manifest.station_state && state.stationState !== 'tour');
+}
+function setTourEra(on) {
+  if (on === state.tourEra) return;
+  state.tourEra = on;
+  const st = drawnStationState();
+  applyHallNodeVisibility(state.hallRoot, st);
+  placeVariantMarkers(st);
+  proj.invalidateDepth(true);      // runtime depth cubes saw the other state's nodes
+  if (on) ensureTourRobot();
+}
+function ensureTourRobot() {
+  if (state.tourRobot || state.tourRobotJob || state.tourRobotFailed || !state.manifest || !state.manifest.robot) return;
+  const r = robotFor('tour');
+  if (!r || !r.url) return;
+  state.tourRobotJob = fetchRobot(r, state.U, 'robot_tour').then((o) => {
+    o.root.name = 'robot_tour';
+    o.root.visible = false;
+    scene.add(o.root);
+    state.tourRobot = o;
+    applyComposite(state.composite);
+  }).catch((e) => { state.tourRobotFailed = true; console.warn('tour robot', e); })
+    .finally(() => { state.tourRobotJob = null; });
+}
+/** Is `p` the tour photo of an entry whose place differs between the station states (the G1 / VADER pano)? */
+function panoShowsVariantStation(p) {
+  return !!(p && state.stations && state.stations.list.some((s) => s.variants
+    && Object.values(s.variants).some((v) => (v.pano_id || s.pano_id) === p.id)));
+}
+/** Which robot glb is drawn right now (null: none). Test hook. */
+function drawnRobotUrl() {
+  if (state.tourRobot && state.tourRobot.root.visible) return state.tourRobot.url;
+  if (state.robot && state.robot.visible) return state.robotUrl;
+  return null;
 }
 
 function setUserOpacity(o) {
@@ -627,8 +1031,9 @@ function setUserOpacity(o) {
   applyComposite(o >= 0.99 ? 'full' : 'blend');
 }
 
-/** Fly into a tour panorama (the nearest, or `id`) and cross-fade the photo in. */
-async function enterPano(id) {
+/** Fly into a tour panorama (the nearest, or `id`) and cross-fade the photo in. `lookW` (W point, optional): turn
+ *  the view towards it during the flight (the info card's photo button looks at the station). */
+async function enterPano(id, lookW = null) {
   if (!proj.panos.length) { toast(t('no_panos')); return; }
   if (state.mode === 'intro') return;
   const p = id ? proj.byId.get(id) : panoOrder()[0];
@@ -654,12 +1059,20 @@ async function enterPano(id) {
   sphereOpacity(nextS, 0);
   applyComposite('trans');
   proj.ensureTexture(p, loaders);
+  if (state.manifest.station_state && state.stationState !== 'tour' && !p.src.photo_only) ensureTourRobot();
   const from = state.camPos.clone(), to = p.position.clone();
+  const y0 = player.yaw, p0 = player.pitch;
+  let y1 = y0, p1 = p0;
+  if (lookW) {
+    const d = new THREE.Vector3(...wToGl(lookW)).sub(to);
+    if (d.lengthSq() > 1e-4) { y1 = Math.atan2(-d.x, -d.z); p1 = THREE.MathUtils.clamp(Math.atan2(d.y, Math.hypot(d.x, d.z)), -0.6, 0.4); }
+  }
   const dist = from.distanceTo(to);
   const dur = dist < 0.05 ? 0.45 : THREE.MathUtils.clamp(0.55 + dist * 0.11, 0.7, 2.0);
   const prevO = prevS ? prevS.material.uniforms.opacity.value : 0;
   await runAnim(dur, (k) => {
     state.camPos.lerpVectors(from, to, easeInOut(k));
+    if (lookW) { const e = easeInOut(Math.min(1, k * 1.25)); player.yaw = lerpAngle(y0, y1, e); player.pitch = THREE.MathUtils.lerp(p0, p1, e); }
     if (prevS) sphereOpacity(prevS, prevO * (1 - smooth(0, 0.35, k)));
     sphereOpacity(nextS, smooth(0.55, 1, k) * (dist < 0.05 ? 1 : 1));
   });
@@ -826,12 +1239,29 @@ function start(withIntro) {
  * projected panos, 256 cubes, pixel ratio 1). Only when the quality was not chosen explicitly (URL or settings).
  */
 const autoQ = { slow: 0, done: params.has('quality') || !!settings.qualityChosen };
+/** v3: a photo layer that switched on by itself (manifest default, no own choice) switches off again when the frame
+ *  rate stays below 30 fps for 4 s while it is drawn (weak GPUs: e.g. ~11 fps on a 2-CU iGPU at medium); once only. */
+const autoS = { slow: 0, off: !!settings.splatsAutoOff };   // remembered per browser (settings)
+function autoSplats() {
+  if (autoS.off || !state.splatsAuto || splatsChosen() || !splatLayers.shown || state.mode !== 'walk' || !state.started
+    || document.hidden) { autoS.slow = 0; return false; }
+  autoS.slow = state.fps < 30 && splatLayers.fade > 0.3 ? autoS.slow + 1 : 0;
+  if (autoS.slow < 4) return false;
+  autoS.off = true; state.splatsAuto = false;
+  settings.splatsAutoOff = true; saveSettings();
+  setSplats(false, false);
+  toast(t('splats_auto_off'), 4000);
+  autoQ.slow = 0;
+  return true;
+}
 function autoQuality() {
+  if (autoSplats()) return;
   if (autoQ.done || state.mode !== 'walk' || !state.started || document.hidden) return;
   autoQ.slow = state.fps < 35 ? autoQ.slow + 1 : 0;
   if (autoQ.slow >= 5 && settings.quality === 'high') {
     autoQ.done = true;
     $('set-quality').value = 'medium'; settings.quality = 'medium';
+    splatLayers.setQuality('medium');
     renderer.setPixelRatio(maxPixelRatio('medium'));
     onResize(); applyProjSettings();
     toast(`${t('quality')}: ${t('q_medium')} (auto)`);
@@ -891,6 +1321,11 @@ function frame(timestamp) {
     const pr = $('prompt');
     if (near && state.mode === 'walk') { pr.hidden = false; pr.textContent = `${pick(near.short) || pick(near.title)} · ${t('press_e')}`; } else pr.hidden = true;
     proj.update(camera, loaders);
+    if (splatLayers.shown) {
+      const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+      splatLayers.update(dt, glToW([camera.position.x, camera.position.y, camera.position.z]), glToW([fwd.x, fwd.y, fwd.z]),
+        tourPhotoStrength());
+    }
     if (state.frame % 2 === 0 || !$('bigmap').hidden) {
       const ms = mapState();
       minimap.draw(ms);
@@ -1014,7 +1449,7 @@ Object.assign(window.__twin, {
   animating: () => !!anim.cur,
   openInfo: (id) => openInfo(state.stations.list.find((x) => x.id === id)), closePanels, showStations,
   discovered: () => [...state.stations.discovered], resetProgress: () => state.stations.reset(),
-  toggleBigMap, setQuality(q) { $('set-quality').value = q; $('set-quality').dispatchEvent(new Event('change')); },
+  toggleBigMap, bigMapLabels: () => minimap.bigLabelBoxes || null, setQuality(q) { $('set-quality').value = q; $('set-quality').dispatchEvent(new Event('change')); },
   info() {
     return { ready: state.ready, loadedAll: !!state.loadedAll, mode: state.mode, fps: state.fps, fpsHistory: state.fpsHistory,
       feetW: this.feetW(), onGround: player.onGround, hallLod: state.hallLod, hallTris: state.hallTris,
@@ -1023,16 +1458,38 @@ Object.assign(window.__twin, {
       respawns: player.respawns, contextLost: state.contextLost || 0, gl: renderer.getContext().getParameter(renderer.getContext().VERSION),
       renderer: rendererName(), drawCalls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
       composite: state.composite, pano: state.pano && state.pano.id, intro: state.intro && state.intro.phase,
-      transitions: state.transitions, nav: !!state.nav };
+      transitions: state.transitions, nav: !!state.nav, splats: { ...splatLayers.info(), auto: !!state.splatsAuto, autoOff: autoS.off },
+      stationState: state.stationState,
+      robotUrl: state.robotUrl, robotLook: state.robotLook,
+      tourEra: state.tourEra, drawnRobot: drawnRobotUrl(), drawnStationState: drawnStationState(),
+      extraVisible: state.extraRoot.visible && state.extraRoot.children.length > 0,
+      pixelRatio: renderer.getPixelRatio() };
   },
   selfTest,
+  /** v3: splat layer and station state (test hooks). */
+  setSplats: (on) => setSplats(on, false),
+  splatProbe: (n, stride) => splatLayers.probe(n, stride),
+  setSplatPush: (m) => { splatLayers.pushM = m; splatLayers.setVisible(splatLayers.visible); },
+  setSplatFreeSpace: (on) => { splatLayers.freeEnabled = !!on; splatLayers.setVisible(splatLayers.visible); },
+  setSplatViewFade: (on) => { splatLayers.fadeEnabled = !!on && !!splatLayers.views; splatLayers.tourFade = !!on; },
+  setStationState: (s) => setStationState(s),
+  /** Splats alone on black (renderer comparison against gsplat): hides hall, extra meshes, robot, markers. */
+  splatOnlyView(on) {
+    state.hallRoot.visible = !on; state.extraRoot.visible = !on;
+    state.overlaysHidden = !!on; state.robotHidden = !!on;
+    if (state.robot) state.robot.visible = !on;
+    if (state.stations) state.stations.group.visible = !on;
+    scene.background = on ? new THREE.Color(0x000000) : new THREE.Color(0x1b2027);
+    splatLayers.setVisible(splatLayers.visible);
+  },
+  setPixelRatio(pr) { renderer.setPixelRatio(pr); onResize(); },
   /** Synchronous render benchmark (no vsync cap): ms per frame at the current canvas size, GPU-synchronised. */
   bench(n = 60) {
     const gl = renderer.getContext();
     const px = new Uint8Array(4);
     camera.updateMatrixWorld();
     proj.update(camera, loaders);
-    renderer.render(scene, camera); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    renderer.render(scene, camera); unbindPixelPack(gl); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
     const t0 = performance.now();
     for (let i = 0; i < n; i++) {
       camera.rotation.y += 0.01;
@@ -1041,9 +1498,9 @@ Object.assign(window.__twin, {
       // submit per frame and sync every 10 frames: one huge command batch can trip the driver's GPU job timeout
       // (seen on the AMD iGPU: amdgpu "ring gfx timeout" -> WebGL context lost)
       gl.flush();
-      if (i % 10 === 9) gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      if (i % 10 === 9) { unbindPixelPack(gl); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); }
     }
-    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    unbindPixelPack(gl); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
     const ms = (performance.now() - t0) / n;
     const size = renderer.getDrawingBufferSize(new THREE.Vector2());
     return { ms_per_frame: +ms.toFixed(2), fps_equiv: +(1000 / ms).toFixed(1), width: size.x, height: size.y, proj: proj.enabled };
@@ -1092,6 +1549,7 @@ async function selfTest(nDirs = 48, id = null) {
   renderer.setRenderTarget(rt);
   renderer.render(sc, new THREE.Camera());
   const px = new Float32Array(nDirs * 4);
+  unbindPixelPack(renderer.getContext());
   renderer.readRenderTargetPixels(rt, 0, 0, nDirs, 1, px);
   renderer.setRenderTarget(null);
   rt.dispose(); mat.dispose();

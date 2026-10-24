@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ZeMA Halle 10 – Digitaler Zwilling</title>
-<meta name="description" content="Begehbarer digitaler Zwilling der ZeMA-Halle 10 (three.js), rekonstruiert aus dem virtuellen Rundgang">
+<meta name="description" content="Begehbarer digitaler Zwilling der ZeMA-Halle 10 (three.js), rekonstruiert aus dem virtuellen Rundgang und einem Handvideo der Halle">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath d=%22M8 1l7 7-7 7-7-7z%22 fill=%22%232fb7c9%22/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/v3.css">
 <script type="importmap">
 {
   "imports": {
@@ -26,7 +27,7 @@
   <div class="loading-card">
     <p class="kicker">ZeMA · Saarbrücken</p>
     <h1 id="app-title">ZeMA Halle 10 – Digitaler Zwilling</h1>
-    <p id="app-sub" class="sub">Begehen und entdecken – aus dem virtuellen Rundgang rekonstruiert</p>
+    <p id="app-sub" class="sub">Begehen und entdecken – rekonstruiert aus dem virtuellen Rundgang und einem Handvideo der Halle</p>
     <ul id="features" class="features"></ul>
     <div class="bar"><div id="load-bar"></div></div>
     <p id="load-text" class="small" data-i18n="loading">Lade …</p>
@@ -53,10 +54,12 @@
     <button id="discovered" class="pill" data-i18n-title="checklist" title="Checkliste">0 / 0</button>
     <span id="mode-pill" class="pill dim" hidden></span>
     <span id="fps" class="pill dim" hidden>– fps</span>
+    <span id="splat-status" class="pill dim" hidden></span>
     <span class="spacer"></span>
     <button id="btn-stations" class="icon" data-i18n-title="stations" title="Stationen">☰</button>
     <button id="btn-pano" class="icon" data-i18n-title="pano_mode" title="Panorama">◎</button>
     <button id="btn-proj" class="icon" data-i18n-title="proj_tex" title="Foto-Textur">▦</button>
+    <button id="btn-splats" class="icon" data-i18n-title="splats" title="Foto-Ebene (Handvideo der Halle)" hidden>✦</button>
     <button id="btn-map" class="icon" data-i18n-title="map" title="Karte">⌖</button>
     <button id="btn-settings" class="icon" data-i18n-title="settings" title="Einstellungen">⚙</button>
     <button id="btn-help" class="icon" data-i18n-title="help" title="Hilfe">?</button>
@@ -108,7 +111,11 @@
     <input id="set-fov" type="range" min="50" max="100" step="1" value="70"></label>
   <label class="row"><span data-i18n="invert_y">Maus Y invertieren</span><input id="set-invert" type="checkbox"></label>
   <label class="row"><span data-i18n="proj_tex">Foto-Textur (Panoramen projizieren)</span><input id="set-proj" type="checkbox" checked></label>
+  <label class="row" id="row-splats" hidden><span data-i18n="splats">Foto-Ebene (Handvideo der Halle, Gaussian Splats)</span><input id="set-splats" type="checkbox"></label>
+  <label class="row" id="row-station" hidden><span data-i18n="station_state">Station G1</span>
+    <select id="set-station"><option value="present_day" data-i18n="st_present">Heute (Handvideo der Halle)</option><option value="tour" data-i18n="st_tour">Zustand im Rundgang</option></select></label>
   <label class="row"><span data-i18n="show_fps">FPS anzeigen</span><input id="set-fps" type="checkbox"></label>
+  <div class="row" id="row-help"><span data-i18n="help">Steuerung</span><button id="set-help" class="icon" data-i18n-title="help" title="Hilfe">?</button></div>
   <label class="row"><span data-i18n="debug_view">Debug-Ansicht</span>
     <select id="set-debug"><option value="0">–</option><option value="1" data-i18n="dbg_weights">Pano-Gewichte</option><option value="2" data-i18n="dbg_coverage">Abdeckung</option><option value="3" data-i18n="dbg_baked">nur Basistextur</option></select></label>
 </div>
