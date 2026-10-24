@@ -11,7 +11,7 @@
  },
  "frame": "W: metres, right-handed, z up, floor z=0. glb files are glTF y-up: (x,y,z)_W -> (x,z,-y)_GL.",
  "placeholder": false,
- "built": "2026-10-24 04:12",
+ "built": "2026-10-24 14:56",
  "hall": [
   {
    "url": "hall_lo.glb",
@@ -169,6 +169,11 @@
    "sigma": {
     "pos_m": 0.2,
     "rot_deg": 0.5
+   },
+   "change_mask": {
+    "url": "panos/media_95583947_1FF5_6AC5_41A9_79BC9AD0D8A7/change_mask_1024.png",
+    "width": 1024,
+    "variant": "present_day"
    }
   },
   {
@@ -226,6 +231,11 @@
    "sigma": {
     "pos_m": 0.2,
     "rot_deg": 0.538
+   },
+   "change_mask": {
+    "url": "panos/media_9D15058B_1FCD_1A4E_41BC_01F37658EB07/change_mask_1024.png",
+    "width": 1024,
+    "variant": "present_day"
    }
   },
   {
@@ -283,6 +293,11 @@
    "sigma": {
     "pos_m": 0.2,
     "rot_deg": 0.5
+   },
+   "change_mask": {
+    "url": "panos/media_679879BB_1FD3_2A4B_41B4_29648D6F807A/change_mask_1024.png",
+    "width": 1024,
+    "variant": "present_day"
    }
   },
   {
@@ -340,6 +355,11 @@
    "sigma": {
     "pos_m": 0.2,
     "rot_deg": 0.782
+   },
+   "change_mask": {
+    "url": "panos/media_2EDB1CA7_1E55_2AD5_41B1_9DB5C9B14916/change_mask_1024.png",
+    "width": 1024,
+    "variant": "present_day"
    }
   },
   {
@@ -397,6 +417,11 @@
    "sigma": {
     "pos_m": 0.2,
     "rot_deg": 0.5
+   },
+   "change_mask": {
+    "url": "panos/media_951E34E0_1FD5_1BF8_41A9_EEFC93315F6A/change_mask_1024.png",
+    "width": 1024,
+    "variant": "present_day"
    }
   },
   {
@@ -454,6 +479,11 @@
    "sigma": {
     "pos_m": 0.2,
     "rot_deg": 0.5
+   },
+   "change_mask": {
+    "url": "panos/media_64DB003E_1FDD_1A4B_41BC_B1215C200E50/change_mask_1024.png",
+    "width": 1024,
+    "variant": "present_day"
    }
   },
   {
@@ -511,6 +541,11 @@
    "sigma": {
     "pos_m": 0.204,
     "rot_deg": 0.788
+   },
+   "change_mask": {
+    "url": "panos/media_31AE7FBF_3E59_48AD_41B7_2C19B016B908/change_mask_1024.png",
+    "width": 1024,
+    "variant": "present_day"
    }
   },
   {
@@ -568,6 +603,11 @@
    "sigma": {
     "pos_m": 0.207,
     "rot_deg": 0.5
+   },
+   "change_mask": {
+    "url": "panos/media_36C9969B_25F9_872D_41B6_0244612E3390/change_mask_1024.png",
+    "width": 1024,
+    "variant": "present_day"
    }
   },
   {
@@ -625,6 +665,11 @@
    "sigma": {
     "pos_m": 0.4,
     "rot_deg": 0.5
+   },
+   "change_mask": {
+    "url": "panos/media_9D1E5522_9158_699E_41DD_93C853F3CE33/change_mask_1024.png",
+    "width": 1024,
+    "variant": "present_day"
    }
   },
   {
@@ -979,18 +1024,24 @@
    },
    "view_fade": {
     "dot": [
-     0.15,
-     0.55
+     0.2,
+     0.6
     ],
     "dist_m": [
-     5.0,
-     10.0
+     4.5,
+     7.0
     ],
     "tour_m": [
      1.5,
      3.5
     ],
-    "note": "engine: the layer fades out where the viewer looks away from every nearby training camera's forward direction (dot of the horizontal forwards below dot[0] -> hidden, above dot[1] -> full) or stands farther than dist_m from the walked path (splats seen from behind, from the side or far off the path are transparent ghosts), and gives way to the projected tour photos within tour_m of a projectable tour spot (tour = main source)"
+    "note": "engine: one source per view, never a lasting mix: the splat layer owns the view (cross-fade switch_s, hysteresis switch_at on the score) while the score = smoothstep(dot of the horizontal forwards with the nearest training cameras) x (1 - smoothstep(dist_m from the walked path)) is high and the camera is not within tour_m of a projectable tour spot (there the tour photos are the main source); else the projected hall alone",
+    "mode": "switch",
+    "switch_at": [
+     0.4,
+     0.6
+    ],
+    "switch_s": 0.25
    },
    "views_W": [
     [
@@ -3195,6 +3246,56 @@
    "variant": "present_day",
    "hide_hall_nodes": [
     "StationRegion"
+   ],
+   "region_W": {
+    "x": [
+     3.9,
+     9.6
+    ],
+    "y": [
+     -12.0,
+     -6.9
+    ],
+    "z": [
+     -0.05,
+     3.2
+    ]
+   },
+   "hall_visual": "cut",
+   "cut_W": [
+    {
+     "id": "vader_cell",
+     "x": [
+      3.95,
+      5.95
+     ],
+     "y": [
+      -10.85,
+      -7.1
+     ],
+     "z": [
+      0.03,
+      2.7
+     ]
+    },
+    {
+     "id": "green_tool_cabinet",
+     "x": [
+      6.12,
+      6.84
+     ],
+     "y": [
+      -10.2,
+      -9.32
+     ],
+     "z": [
+      0.03,
+      1.15
+     ]
+    }
+   ],
+   "visual_nodes": [
+    "StationPatch_props"
    ],
    "collider_url": "station/station_patch_collider.glb"
   }

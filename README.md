@@ -15,14 +15,19 @@ all vendored). It needs a WebGL2 browser.
 - **The G1 station as it is today is the default.** It comes from the hand-held video: posts with red belt
   barriers, a yellow mat, a black gantry with the G1 hanging in its harness, desks and the open ABB table. The G1
   has the real robot's look (silver shells, black joints, helmet and Dex3 hands, blue wrist rings, visor).
+  It is there from the first frame: the game starts only once the station and the G1 have loaded.
   `?station=tour` (or the settings panel) shows the station as it was on the tour day, with the G1 standing at the
-  tool-cabinet spot. In a tour photo (key P, or "Tour photo (earlier state)" on the G1 card) the station is
-  always drawn as it was then; walking on goes back to today's station.
+  tool-cabinet spot.
+- **Tour photos merged with today's station:** in a tour photo (the intro, key P, or "Tour photo (with today's
+  station)" on the G1 card) the photo stays the picture with today's G1, gantry, posts, red belts and yellow mat
+  drawn into it. Only where it shows what is gone today (the old black cell and the green cabinet) the 3D hall without
+  them shows through, with a short soft edge. There is no double exposure of the two days.
 - **Splat photo layer:** 1.24 million Gaussian splats from the hand-held video of the hall, along the main aisle.
-  They look like a photo when you walk the aisle looking forward, fade out where the camera never looked, and give
-  way to the tour photos near a tour spot. It switches on by itself on capable desktops (quality medium or high, no
-  touch screen, hardware GPU) after everything else has loaded, and switches off again if the frame rate stays below
-  30 fps. Toggle it with key **G**, the ✦ button or the settings; force it with `?splats=1` or `?splats=0`.
+  Per view one source is drawn, never both half-transparent: the splats while you are within about 5 m of the walked
+  aisle and look along it, the projected tour photos near a tour spot, the 3D hall elsewhere; a switch is a short cross-fade.
+  It switches on by itself on capable desktops (quality medium or high, no touch screen, hardware GPU) after
+  everything else has loaded, and switches off again if the frame rate stays below 30 fps. Toggle it with key **G**,
+  the ✦ button or the settings; force it with `?splats=1` or `?splats=0`.
 - **Hall:** more geometry and sharper texture along the main aisle, taken from the hand-held video.
 - **Big map:** labels no longer overlap. **Start screen:** shows readable loading steps.
 

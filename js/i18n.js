@@ -37,8 +37,8 @@ const STR = {
     splats_auto_off: 'Foto-Ebene aus: zu langsam auf diesem Gerät (G schaltet sie wieder an)',
     station_state: 'Station G1', st_tour: 'Zustand im Rundgang', st_present: 'Heute (Handvideo der Halle)',
     station_present_on: 'Station G1: heutiger Aufbau (Handvideo der Halle)', station_tour_on: 'Station G1: Zustand im Rundgang',
-    load_station: 'G1-Station (heute)', view_pano_tour: 'Foto aus dem Rundgang (früherer Zustand)',
-    pano_tour_state: 'Foto aus dem Rundgang: die G1-Station ist hier im damaligen Zustand eingeblendet',
+    load_station: 'G1-Station (heute)', view_pano_tour: 'Foto aus dem Rundgang (mit der Station von heute)',
+    pano_today_state: 'Foto aus dem Rundgang; die G1-Station ist im heutigen Aufbau eingesetzt',
   },
   en: {
     app_title: 'ZeMA digital twin', app_sub: 'Walk the hall and discover', loading: 'Loading …', start: 'Start',
@@ -77,8 +77,8 @@ const STR = {
     splats_auto_off: 'Photo layer off: too slow on this device (G switches it back on)',
     station_state: 'G1 station', st_tour: 'State in the tour', st_present: 'Today (hand-held video of the hall)',
     station_present_on: 'G1 station: today\'s setup (hand-held video of the hall)', station_tour_on: 'G1 station: state in the tour',
-    load_station: 'G1 station (today)', view_pano_tour: 'Tour photo (earlier state)',
-    pano_tour_state: 'Tour photo: the G1 station is shown here as it was then',
+    load_station: 'G1 station (today)', view_pano_tour: 'Tour photo (with today\'s station)',
+    pano_today_state: 'Tour photo; the G1 station is shown in today\'s setup',
   },
 };
 

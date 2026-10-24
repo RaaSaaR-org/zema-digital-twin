@@ -51,10 +51,22 @@ bool floorOwned(vec3 gl) {                     // layer 0: floor cells the splat
   vec2 t = (w.xy - freeOrigin.xy) / freeSize.xy;
   if (any(lessThan(t, vec2(0.0))) || any(greaterThanEqual(t, vec2(1.0)))) return false;
   return texture(freeTex, vec3(t, 0.5 * freeVoxel / freeSize.z)).r > 0.5;
+}
+uniform int cutCount; uniform vec3 cutMin[4]; uniform vec3 cutMax[4];
+bool inCut(vec3 gl) {                          // v3 station state: tour-day objects that are gone today (GL boxes)
+  for (int i = 0; i < 4; i++) {
+    if (i >= cutCount) break;
+    if (all(greaterThan(gl, cutMin[i])) && all(lessThan(gl, cutMax[i]))) return true;
+  }
+  return false;
 }`;
 // fragment code of the hooks; compiled in only while splats are shown (define SPLAT_HOOKS), so the v2 path keeps
 // early depth testing. Owned floor -> drawn at the far plane (backdrop behind every splat incl. the reflections).
+// HALL_CUT (hall materials only, not the station patch): fragments inside a cut box are dropped.
 export const HALL_HOOK_FRAG = /* glsl */`
+#ifdef HALL_CUT
+  if (cutCount > 0 && inCut(vHallWp)) discard;
+#endif
 #ifdef SPLAT_HOOKS
   if (inFreeSpace(vHallWp)) discard;
   gl_FragDepth = floorOwned(vHallWp) ? 0.99999994 : gl_FragCoord.z;
@@ -64,7 +76,9 @@ export function makeHallUniforms() {
   const empty = new THREE.Data3DTexture(new Uint8Array([0]), 1, 1, 1);
   empty.format = THREE.RedFormat; empty.needsUpdate = true;
   return { depthPush: { value: 0 }, freeTex: { value: empty }, freeOrigin: { value: new THREE.Vector3() },
-    freeSize: { value: new THREE.Vector3(1, 1, 1) }, freeOn: { value: 0 }, freeVoxel: { value: 1 } };
+    freeSize: { value: new THREE.Vector3(1, 1, 1) }, freeOn: { value: 0 }, freeVoxel: { value: 1 },
+    cutCount: { value: 0 }, cutMin: { value: Array.from({ length: 4 }, () => new THREE.Vector3()) },
+    cutMax: { value: Array.from({ length: 4 }, () => new THREE.Vector3()) } };
 }
 
 export function installHallHooks(material, uniforms) {
@@ -158,9 +172,14 @@ export class SplatLayers {
     this.fadeDot = vf.dot || [0.15, 0.55];
     this.fadeDist = vf.dist_m || [5.0, 10.0];
     this.tourFadeM = vf.tour_m || null;      // [near, far] m from a projectable tour spot (null: projection's fade)
+    // 'switch' (default): one source at a time, see update(); 'blend': the v3.0 opacity = score x (1 - tour strength)
+    this.fadeMode = vf.mode === 'blend' ? 'blend' : 'switch';
+    this.switchAt = vf.switch_at || [0.4, 0.6];   // hysteresis: off below [0], on above [1]
+    this.switchS = vf.switch_s ?? 0.25;           // duration of the cross-fade at a switch
     this.fadeEnabled = !!this.views;
     this.tourFade = true;
     this.fade = 1;
+    this.own = null;
   }
 
   /** Target opacity for a viewer at W position p looking along W forward f (horizontal parts are used): the best
@@ -182,15 +201,30 @@ export class SplatLayers {
     return best;
   }
 
-  /** Per frame: ease the layer opacity towards the target (about 0.3 s): view fade x (1 - tour photo strength).
+  /** Per frame: which source draws the view. 'switch': the splats OR the hall, never a lasting mix of both (a
+   *  half-transparent layer over the projected hall reads as a double exposure): the layer owns the view while the
+   *  view score (viewFadeTarget: near the walked path, looking along it) is high and the camera is not at a tour spot
+   *  (tour photo strength: there the tour photos are the main source), with hysteresis; a switch is a short
+   *  cross-fade (switchS). Where the layer owns the view, the splats win wherever they are dense and the hall fills in
+   *  behind them (depth push). 'blend': opacity eased to score x (1 - tour strength).
    *  The hall hooks (free-space discard, floor backdrop) are on only while the layer is mostly visible, so near the
    *  tour spots the hall looks exactly as without the layer. */
   update(dt, pW, fW, tourStrength = 0) {
     if (!this.shown || !this.layers.length) return;
-    const tgt = this.viewFadeTarget(pW, fW) * (this.tourFade === false ? 1 : 1 - tourStrength);
-    const k = Math.min(1, dt * 4);
-    this.fade += (tgt - this.fade) * k;
-    if (Math.abs(tgt - this.fade) < 0.01) this.fade = tgt;
+    const score = this.viewFadeTarget(pW, fW);
+    const tour = this.tourFade === false ? 0 : tourStrength;
+    if (this.fadeMode === 'switch') {
+      const [lo, hi] = this.switchAt;
+      const first = this.own === null;
+      this.own = this.own ? score > lo && tour < hi : score > hi && tour < lo;
+      const tgt = this.own ? 1 : 0;
+      if (first) this.fade = tgt;
+      else this.fade = tgt > this.fade ? Math.min(tgt, this.fade + dt / this.switchS) : Math.max(tgt, this.fade - dt / this.switchS);
+    } else {
+      const tgt = score * (1 - tour);
+      this.fade += (tgt - this.fade) * Math.min(1, dt * 4);
+      if (Math.abs(tgt - this.fade) < 0.01) this.fade = tgt;
+    }
     for (const l of this.layers) l.mesh.opacity = this.fade;
     const hooks = this.fade > 0.35;
     this.hallUniforms.freeOn.value = hooks && this.freeEnabled && this.freeLoaded ? 1 : 0;
@@ -316,7 +350,7 @@ export class SplatLayers {
   info() {
     return { available: this.available, state: this.state, wanted: this.wanted, visible: this.visible, shown: this.shown,
       quality: this.quality, push_m: this.pushUniform.value, free_on: this.hallUniforms.freeOn.value,
-      fade: +this.fade.toFixed(3), fade_enabled: this.fadeEnabled, tour_fade: this.tourFade, layers: this.layers.map((l) => ({ id: l.desc.id, count: l.count,
+      fade: +this.fade.toFixed(3), fade_enabled: this.fadeEnabled, tour_fade: this.tourFade, fade_mode: this.fadeMode, own: this.own, layers: this.layers.map((l) => ({ id: l.desc.id, count: l.count,
         drawn: (l.mesh.extSplats || l.mesh.packedSplats || {}).numSplats, max_sh: l.mesh.maxSh })), ...this.stats };
   }
 

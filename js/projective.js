@@ -300,7 +300,7 @@ export class ProjectiveTexturing {
     };
     const m = new THREE.ShaderMaterial({
       name: 'ProjectivePanoMaterial', vertexShader: VERT, fragmentShader: FRAG, uniforms,
-      vertexColors: !!geometry.attributes.color, side: THREE.DoubleSide,
+      vertexColors: !!geometry.attributes.color, side: THREE.DoubleSide, defines: { HALL_CUT: '' },
     });
     this.materials.set(orig, m);
     return m;
@@ -515,25 +515,37 @@ export async function loadEquirect(url, loaders, renderer, opt = {}) {
  * Sphere shown in panorama mode; uses the same uv convention as the projective shader.
  * `gain` (linear RGB, the pano's exposure gain used by the projection) is applied with weight 1 - gainMix, so a
  * cross-fade between the projected twin and the photo has no brightness jump; gainMix -> 1 shows the raw photo.
+ * Change mask (v3, maskOn 1): an 8-bit equirect of the pano (manifest panos[].change_mask, rundgang/change_mask.py;
+ * 1 = the photo shows the hall as it no longer is: the replaced tour-day setup, or today's station stands in front)
+ * makes those photo pixels transparent (feathered edges), so the twin shows today's station there; maskOn 2 = whole
+ * photo transparent (mask not loaded yet).
+ * Blending is custom (= normal blending) so the alpha also works while the sphere is drawn as the opaque background.
  */
 export function makePanoSphere() {
   const mat = new THREE.ShaderMaterial({
     name: 'PanoSphere',
     uniforms: { tex: { value: null }, rot: { value: new THREE.Matrix3() }, center: { value: new THREE.Vector3() },
-      opacity: { value: 1 }, flipV: { value: 0 }, gain: { value: new THREE.Vector3(1, 1, 1) }, gainMix: { value: 1 } },
+      opacity: { value: 1 }, flipV: { value: 0 }, gain: { value: new THREE.Vector3(1, 1, 1) }, gainMix: { value: 1 },
+      maskOn: { value: 0 }, maskTex: { value: null }, maskFlipV: { value: 0 } },
     vertexShader: DIST_VERT,
     fragmentShader: /* glsl */`
       uniform sampler2D tex; uniform mat3 rot; uniform vec3 center; uniform float opacity; uniform float flipV;
       uniform vec3 gain; uniform float gainMix;
+      uniform float maskOn; uniform sampler2D maskTex; uniform float maskFlipV;
       varying vec3 vWp;
       ${PANO_UV_GLSL}
       void main() {
         vec3 dir = normalize(vWp - center);
         vec3 c = panoSample(tex, panoUv(rot, dir, flipV)).rgb * mix(gain, vec3(1.0), gainMix);
-        gl_FragColor = vec4(c, opacity);
+        float a = opacity;
+        if (maskOn > 1.5) a = 0.0;
+        else if (maskOn > 0.5) a *= 1.0 - texture(maskTex, panoUv(rot, dir, maskFlipV)).r;
+        gl_FragColor = vec4(c, a);
         #include <colorspace_fragment>
       }`,
     side: THREE.BackSide, depthTest: false, depthWrite: false, transparent: true,
+    blending: THREE.CustomBlending, blendSrc: THREE.SrcAlphaFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+    blendSrcAlpha: THREE.OneFactor, blendDstAlpha: THREE.OneMinusSrcAlphaFactor,
   });
   const mesh = new THREE.Mesh(new THREE.SphereGeometry(40, 96, 48), mat);
   mesh.renderOrder = 1000;

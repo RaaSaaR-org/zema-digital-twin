@@ -17,7 +17,7 @@ import { Player } from './player.js';
 import { Input } from './input.js';
 import { Stations } from './stations.js';
 import { Minimap } from './minimap.js';
-import { ProjectiveTexturing, makePanoSphere, DEPTH_LAYER, PANO_UV_GLSL } from './projective.js';
+import { ProjectiveTexturing, makePanoSphere, loadEquirect, DEPTH_LAYER, PANO_UV_GLSL } from './projective.js';
 import { SplatLayers, SPLAT_QUALITY, installHallHooks } from './splats.js';
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
@@ -127,8 +127,6 @@ const state = {
   fps: 0, fpsHistory: [], frame: 0, errors: [], hallLod: -1, timings: {}, camPos: new THREE.Vector3(),
   composite: 'off', userOpacity: 1, nav: null, overlaysHidden: false, intro: null, transitions: 0,
   stationState: 'tour', extraRoot: new THREE.Group(), extraColliders: [], hiddenHallNodes: [], robotUrl: null,
-  // v3: while a tour photo is shown in a non-tour station state, the station is drawn in its tour state (tourEra)
-  tourEra: false, tourRobot: null, tourRobotJob: null, tourRobotFailed: false,
 };
 state.extraRoot.name = 'extraMeshes';
 scene.add(state.extraRoot);
@@ -280,7 +278,8 @@ async function load() {
   const panoList = (manifest.panos || []).map((p) => ({ ...p,
     pose_W: { ...(p.pose_W || p.pose), cam_convention: (p.pose_W || p.pose || {}).cam_convention || manifest.pano_cam_convention },
     equirect: resolve(p.equirect),
-    equirect_lowres: resolve(p.equirect_lowres), depth: resolve(p.depth) }));
+    equirect_lowres: resolve(p.equirect_lowres), depth: resolve(p.depth),
+    change_mask: resolve(p.change_mask) }));
   panoList.sort((a, b) => a.pose_W.t_W[0] - b.pose_W.t_W[0]);
   proj.setPanos(panoList, removes);
   if (manifest.projection) {
@@ -303,12 +302,16 @@ async function load() {
     proj.setEnabled(wasProj);
   }
 
-  // v3: a non-tour station state (the present-day default) replaces hall nodes and their colliders: start it now and
-  // place the player only once its colliders and nav grid are in (the visual patch keeps loading in the background)
+  // v3: a non-tour station state (the present-day default) replaces hall nodes and their colliders. The game becomes
+  // playable only once the whole station is in (colliders, nav grid, visual patch, robot), so today's G1 station is
+  // there from the first frame and nothing pops in after the start; after 10 s at least the colliders (a slow or
+  // failed station never blocks the game)
   let stationJob = null;
   if (state.stationState !== 'tour') {
     stationJob = applyStationState(state.stationState).catch((e) => console.warn('station', e));
-    await Promise.race([state.stationColliderReady.catch(() => {}), stationJob]);   // a failed station never blocks the game
+    const cap = new Promise((res) => setTimeout(res, 10000)).then(() => state.stationColliderReady.catch(() => {}));
+    await Promise.race([stationJob, cap]);
+    state.timings.station_ms = Math.round(performance.now() - t0);
   }
 
   // spawn
@@ -407,7 +410,12 @@ function setHall(root, lod) {
       }
     });
   }
-  root.traverse((o) => { if (o.isMesh) { o.frustumCulled = true; installHallHooks(o.material, splatLayers.hallUniforms); } });
+  root.traverse((o) => {
+    if (!o.isMesh) return;
+    o.frustumCulled = true;
+    installHallHooks(o.material, splatLayers.hallUniforms);
+    o.material.defines = { ...(o.material.defines || {}), HALL_CUT: '' };   // the hall honours the cut boxes
+  });
   state.hallRoot.add(root);
   applyHallNodeVisibility(root);
   if (splatLayers.hooksOn) setHallHooks(true);
@@ -504,13 +512,13 @@ function hideableNodeNames() {
   for (const e of (state.manifest && state.manifest.extra_meshes) || []) for (const n of e.hide_hall_nodes || []) all.add(n);
   return all;
 }
-/** The station state the 3D scene is drawn in: the tour state while a tour photo is shown (tourEra), else the
- *  chosen one. Colliders and the nav grid always follow state.stationState. */
-function drawnStationState() { return state.tourEra ? 'tour' : state.stationState; }
-function hiddenNodeNames(st = drawnStationState()) {
+/** Hall nodes hidden in station state `st`: their colliders always; visually only unless the entry keeps the tour
+ *  hall visible there and drops just the cut boxes (hall_visual "cut"). */
+function hiddenNodeNames(st = state.stationState, visual = false) {
   const hid = new Set();
   for (const e of (state.manifest && state.manifest.extra_meshes) || []) {
-    if (normStationState(e.variant) === st) for (const n of e.hide_hall_nodes || []) hid.add(n);
+    if (normStationState(e.variant) !== st || (visual && e.hall_visual === 'cut')) continue;
+    for (const n of e.hide_hall_nodes || []) hid.add(n);
   }
   return hid;
 }
@@ -520,10 +528,10 @@ function hallNodeOf(o) {
   for (let p = o; p; p = p.parent) if (names.has(p.name)) return p.name;
   return null;
 }
-function applyHallNodeVisibility(root, st = drawnStationState()) {
+function applyHallNodeVisibility(root, st = state.stationState) {
   const names = hideableNodeNames();
   if (!names.size) return;
-  const hid = hiddenNodeNames(st);
+  const hid = hiddenNodeNames(st, true);
   root.traverse((o) => { if (names.has(o.name)) o.visible = !hid.has(o.name); });
 }
 function rebuildColliders() {
@@ -544,11 +552,10 @@ function applyStationVariants(st) {
     if (!v) continue;
     for (const k of VARIANT_KEYS) if (k in v) s[k] = v[k];
   }
-  placeVariantMarkers(drawnStationState());
+  placeVariantMarkers(st);
   if (state.infoStation && !$('panel-info').hidden) openInfo(state.infoStation);
 }
-/** Marker (gem, floor ring, beam) of the entries with variants at their position in station state `st` (the card
- *  fields stay those of the chosen state; tourEra draws the tour markers in the tour photo). */
+/** Marker (gem, floor ring, beam) of the entries with variants at their position in station state `st`. */
 function placeVariantMarkers(st) {
   if (!state.stations) return;
   for (const s of state.stations.list) {
@@ -572,6 +579,19 @@ function robotFor(st) {
   if (!v || !m.robot) return m.robot;
   return { ...m.robot, url: v.url, pose_W: v.pose_W || m.robot.pose_W, variant: v.id };
 }
+/** Hall cut boxes (W {x, y, z} ranges, at most 4): the hall's surfaces inside them are not drawn (tour-day objects
+ *  that are gone in this station state). */
+function setCutBoxes(boxes) {
+  const u = splatLayers.hallUniforms;
+  const list = boxes.slice(0, u.cutMin.value.length);
+  list.forEach((b, i) => {
+    const bb = new THREE.Box3();
+    for (const x of b.x) for (const y of b.y) for (const z of b.z) bb.expandByPoint(new THREE.Vector3(...wToGl([x, y, z])));
+    u.cutMin.value[i].copy(bb.min); u.cutMax.value[i].copy(bb.max);
+  });
+  u.cutCount.value = list.length;
+  state.cutBoxes = list.length;
+}
 async function applyStationState(st) {
   const m = state.manifest;
   state.stationState = st;
@@ -583,17 +603,29 @@ async function applyStationState(st) {
   state.extraColliders = [];
   rebuildColliders();
   applyHallNodeVisibility(state.hallRoot);
+  setCutBoxes([]);
   const jobs = [], colliderJobs = [];
   for (const e of m.extra_meshes || []) {
     if (normStationState(e.variant) !== st) continue;
+    if (e.cut_W) setCutBoxes(e.cut_W);
     jobs.push(loadGlb(state.U(e.url), 'extra', t('load_station')).then((g) => {
       if (state.stationState !== st) return;
       g.scene.name = 'extra:' + e.id;
       g.scene.traverse((o) => {
         if (!o.isMesh) return;
         o.userData.origMaterial = o.material;
+        // the clean props (gantry, mat, posts, belts) are drawn over a tour photo; the fused patch only where the
+        // photo's change mask lets the twin through (applyComposite)
+        for (let q = o; q; q = q.parent) if (/_props$/.test(q.name || '')) o.userData.prop = true;
         installHallHooks(o.material, splatLayers.hallUniforms);
       });
+      // visual_nodes: only these parts of the glb are drawn (e.g. the clean modelled props, not the fused video mesh
+      // and its backfill: the tour hall shows the rest of the region)
+      if (e.visual_nodes) {
+        for (const c of g.scene.children.flatMap((r) => (r.children.length ? r.children : [r]))) {
+          c.visible = e.visual_nodes.includes(c.name);
+        }
+      }
       state.extraRoot.add(g.scene);
       if (splatLayers.hooksOn) setHallHooks(true);
     }));
@@ -716,13 +748,11 @@ function openInfo(s) {
   const pb = $('info-pano');
   const pano = s.pano_id && proj.byId.get(s.pano_id);
   pb.hidden = !pano;
-  // v3: the G1's tour photo in a non-tour state shows the station's earlier (tour) state: say so on the button, and
-  // look at the station's place in that photo
-  const tv = s.variants && s.variants.tour;
-  const earlier = !!(tv && state.manifest.station_state && state.stationState !== 'tour');
-  pb.dataset.i18n = earlier ? 'view_pano_tour' : 'view_pano';
+  // v3: the G1's tour photo in a non-tour state shows today's station set into the photo: say so on the button
+  const today = !!(s.variants && state.manifest.station_state && state.stationState !== 'tour');
+  pb.dataset.i18n = today ? 'view_pano_tour' : 'view_pano';
   pb.textContent = t(pb.dataset.i18n);
-  const look = (earlier && (tv.look_at_W || tv.position_W)) || s.look_at_W || s.position_W || null;
+  const look = s.look_at_W || s.position_W || null;
   pb.onclick = () => { closePanels(); enterPano(s.pano_id, look); };
   state.infoStation = s;
   openPanel('panel-info');
@@ -930,6 +960,7 @@ function bindSphere(s, p) {
   s.position.copy(p.position);
   if (p.tex) { u.tex.value = p.tex; u.flipV.value = p.flipV ? 1 : 0; }
   else u.tex.value = null;
+  updateSphereMask(s);
 }
 function sphereOpacity(s, o) {
   s.material.uniforms.opacity.value = o;
@@ -939,15 +970,18 @@ function sphereOpacity(s, o) {
 /** In which panorama (if any) is the camera, and how are photo and twin combined:
  *  'off'   walk mode: hall with projective texturing, no sphere
  *  'trans' / 'blend': spheres drawn transparently OVER the twin (cross-fades, opacity slider < 1)
- *  'full'  the photo is the background; the hall writes depth only, so the robot and markers are composited into the
- *          real photo with correct occlusion (camera exactly at the pano centre); photo-only panos hide the 3D. */
+ *  'full'  the photo is the background: the hall is drawn first (it gives the depth, so the robot and markers are
+ *          composited into the real photo with correct occlusion; camera exactly at the pano centre), then the photo,
+ *          then the station patch, robot and markers; photo-only panos hide the 3D.
+ *  v3 merge (non-tour station state): one source per region, not a double exposure. Photo pixels whose surface (the
+ *  pano's depth) lies inside the region the station patch replaces show the 3D twin (today's station), with a short
+ *  feathered seam just outside the region; the rest is the tour photo. The 3D scene is always drawn in the chosen
+ *  station state (today's G1 station from the first frame on). */
 function applyComposite(mode) {
   state.composite = mode;
   const p = state.pano;
   const photoOnly = !!(p && p.src.photo_only);
   const full = mode === 'full';
-  const tourEra = wantTourEra(mode);
-  setTourEra(tourEra);
   for (const s of spheres) {
     const m = s.material;
     m.transparent = !full || s !== state.sphere;
@@ -955,13 +989,24 @@ function applyComposite(mode) {
     s.renderOrder = full && s === state.sphere ? -1000 : 1000;
     m.needsUpdate = true;
   }
-  // hall: depth only in full mode, hidden for photo-only panos, else the normal (projective) materials
+  // hall: hidden for photo-only panos, else the normal (projective) materials; in 'full' it is drawn before the photo
   proj.setEnabled(proj.enabled);
-  if (full && !photoOnly) for (const o of proj.meshes) o.material = depthOnlyMat;
+  for (const o of proj.meshes) o.renderOrder = full ? -2000 : 0;
   state.hallRoot.visible = !(full && photoOnly);
-  // the present-day station patch is not in any tour photo: hidden while one is shown (tourEra), not depth-only
-  state.extraRoot.visible = !(full && photoOnly) && !tourEra;
-  state.extraRoot.traverse((o) => { if (o.isMesh) o.material = full && !photoOnly ? depthOnlyMat : o.userData.origMaterial; });
+  state.extraRoot.visible = !(full && photoOnly);
+  // today's props and robot stay solid over a photo (also while it is cross-faded or half transparent): drawn after
+  // the sphere; the fused patch below it, where the change mask lets it through
+  // (in the transparent list, which three.js draws after every opaque object, sorted by renderOrder)
+  const over = mode === 'off' ? 0 : 1001;
+  const onTop = (o) => {
+    o.renderOrder = over;
+    for (const m of [o.material].flat()) {
+      if (m.userData.ownTransparent === undefined) m.userData.ownTransparent = m.transparent;
+      m.transparent = over ? true : m.userData.ownTransparent;
+    }
+  };
+  state.extraRoot.traverse((o) => { if (o.isMesh) { if (o.userData.prop) onTop(o); else o.renderOrder = full ? -1500 : 0; } });
+  if (state.robot) state.robot.traverse((o) => { if (o.isMesh) onTop(o); });
   if (splatLayers) {
     const wasShown = splatLayers.shown;
     splatLayers.setVisible(mode === 'off');
@@ -969,47 +1014,47 @@ function applyComposite(mode) {
   }
   const show3d = !(full && photoOnly) && !state.overlaysHidden;
   const robotOn = !(full && photoOnly) && !state.robotHidden;
-  if (state.robot) state.robot.visible = robotOn && !tourEra;
-  // tourEra: the tour robot variant at its tour pose (made for these photos); hidden until it has loaded
-  if (state.tourRobot) state.tourRobot.root.visible = robotOn && tourEra;
+  if (state.robot) state.robot.visible = robotOn;
   if (state.stations) state.stations.group.visible = show3d;
   $('pano-opacity-wrap').hidden = photoOnly;
-  const tourNote = tourEra && panoShowsVariantStation(p);
-  $('pano-note').hidden = !photoOnly && !tourNote;
-  $('pano-note').textContent = photoOnly ? t('photo_only') : (tourNote ? t('pano_tour_state') : '');
+  const todayNote = !photoOnly && !!changeMaskOf(p) && panoShowsVariantStation(p);
+  $('pano-note').hidden = !photoOnly && !todayNote;
+  $('pano-note').textContent = photoOnly ? t('photo_only') : (todayNote ? t('pano_today_state') : '');
 }
 
-/** v3: a tour photo shows the hall on the tour day. While one is the picture (composite 'full' or 'blend') in a
- *  non-tour station state, the 3D scene is drawn in the tour state: the hall nodes the present-day patch replaces
- *  (depth for the occlusion in 'full'), no patch, the tour robot variant at its tour pose and the tour markers.
- *  Walking, colliders and the nav grid stay in the chosen state. Review fix: the present-day G1 (harness pose) hung
- *  in mid-air in the VADER photo, without its gantry, mat and posts. */
-function wantTourEra(mode) {
-  const p = state.pano;
-  return !!(p && !p.src.photo_only && (mode === 'full' || mode === 'blend') && state.manifest
-    && state.manifest.station_state && state.stationState !== 'tour');
+/** v3: the change mask of pano `p` in the current station state (manifest panos[].change_mask, its `variant`), or
+ *  null when the photo needs none. */
+function changeMaskOf(p) {
+  const cm = p && !p.src.photo_only && p.src.change_mask;
+  return cm && normStationState(cm.variant || 'present_day') === state.stationState ? cm : null;
 }
-function setTourEra(on) {
-  if (on === state.tourEra) return;
-  state.tourEra = on;
-  const st = drawnStationState();
-  applyHallNodeVisibility(state.hallRoot, st);
-  placeVariantMarkers(st);
-  proj.invalidateDepth(true);      // runtime depth cubes saw the other state's nodes
-  if (on) ensureTourRobot();
+/** Load the change mask texture of `p` (once). */
+function ensureChangeMask(p) {
+  if (p.maskTex || p.maskJob || p.maskFailed) return;
+  const cm = changeMaskOf(p);
+  if (!cm) return;
+  p.maskJob = loadEquirect(cm.url, loaders, renderer, { linear: true })
+    .then((tex) => { p.maskTex = tex; })
+    .catch((e) => { p.maskFailed = true; console.warn('change mask', p.id, e); })
+    .finally(() => { p.maskJob = null; });
 }
-function ensureTourRobot() {
-  if (state.tourRobot || state.tourRobotJob || state.tourRobotFailed || !state.manifest || !state.manifest.robot) return;
-  const r = robotFor('tour');
-  if (!r || !r.url) return;
-  state.tourRobotJob = fetchRobot(r, state.U, 'robot_tour').then((o) => {
-    o.root.name = 'robot_tour';
-    o.root.visible = false;
-    scene.add(o.root);
-    state.tourRobot = o;
-    applyComposite(state.composite);
-  }).catch((e) => { state.tourRobotFailed = true; console.warn('tour robot', e); })
-    .finally(() => { state.tourRobotJob = null; });
+/** v3: per frame, the photo sphere's change mask (today's station where the tour photo shows the old setup). */
+function updateSphereMask(s) {
+  const u = s.material.uniforms;
+  const p = s.userData.pano;
+  const cm = changeMaskOf(p);
+  if (cm) ensureChangeMask(p);
+  // mask still loading: the photo waits (2 = fully transparent) rather than show the replaced setup for a moment
+  u.maskOn.value = !cm || p.maskFailed ? 0 : (p.maskTex ? 1 : 2);
+  if (p && p.maskTex) { u.maskTex.value = p.maskTex; u.maskFlipV.value = p.maskTex.userData.flipV ? 1 : 0; }
+}
+/** Photo of `p` ready to be shown: texture, and in a non-tour state its change mask (so the replaced tour-day setup
+ *  is never shown, not even for a moment). */
+function panoShowReady(p) {
+  if (!p.tex) return false;
+  if (!changeMaskOf(p) || p.maskFailed) return true;
+  ensureChangeMask(p);
+  return !!p.maskTex;
 }
 /** Is `p` the tour photo of an entry whose place differs between the station states (the G1 / VADER pano)? */
 function panoShowsVariantStation(p) {
@@ -1018,7 +1063,6 @@ function panoShowsVariantStation(p) {
 }
 /** Which robot glb is drawn right now (null: none). Test hook. */
 function drawnRobotUrl() {
-  if (state.tourRobot && state.tourRobot.root.visible) return state.tourRobot.url;
   if (state.robot && state.robot.visible) return state.robotUrl;
   return null;
 }
@@ -1059,7 +1103,6 @@ async function enterPano(id, lookW = null) {
   sphereOpacity(nextS, 0);
   applyComposite('trans');
   proj.ensureTexture(p, loaders);
-  if (state.manifest.station_state && state.stationState !== 'tour' && !p.src.photo_only) ensureTourRobot();
   const from = state.camPos.clone(), to = p.position.clone();
   const y0 = player.yaw, p0 = player.pitch;
   let y1 = y0, p1 = p0;
@@ -1078,9 +1121,9 @@ async function enterPano(id, lookW = null) {
   });
   if (state.pano !== p) return;
   if (prevS) { sphereOpacity(prevS, 0); prevS.userData.pano = null; }
-  if (!p.tex) {
+  if (!panoShowReady(p)) {
     $('pano-label').textContent = t('loading_pano');
-    await waitFor(() => p.tex || state.pano !== p, 20000);
+    await waitFor(() => panoShowReady(p) || state.pano !== p, 20000);
     if (state.pano !== p) return;
     $('pano-label').textContent = pick(p.label) || p.id;
     bindSphere(nextS, p);
@@ -1154,7 +1197,7 @@ async function playIntro() {
   caption(t('intro_1'));
   proj.pinned.add(hub);
   proj.ensureTexture(hub, loaders);
-  await waitFor(() => hub.tex || state.intro.skipped, 15000);
+  await waitFor(() => panoShowReady(hub) || state.intro.skipped, 15000);
   if (state.intro.skipped || !hub.tex) { endIntro(); return; }
   state.pano = hub; state.sphere = spheres[0];
   bindSphere(spheres[0], hub);
@@ -1321,6 +1364,7 @@ function frame(timestamp) {
     const pr = $('prompt');
     if (near && state.mode === 'walk') { pr.hidden = false; pr.textContent = `${pick(near.short) || pick(near.title)} · ${t('press_e')}`; } else pr.hidden = true;
     proj.update(camera, loaders);
+    for (const s of spheres) if (s.visible) updateSphereMask(s);
     if (splatLayers.shown) {
       const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
       splatLayers.update(dt, glToW([camera.position.x, camera.position.y, camera.position.z]), glToW([fwd.x, fwd.y, fwd.z]),
@@ -1461,7 +1505,7 @@ Object.assign(window.__twin, {
       transitions: state.transitions, nav: !!state.nav, splats: { ...splatLayers.info(), auto: !!state.splatsAuto, autoOff: autoS.off },
       stationState: state.stationState,
       robotUrl: state.robotUrl, robotLook: state.robotLook,
-      tourEra: state.tourEra, drawnRobot: drawnRobotUrl(), drawnStationState: drawnStationState(),
+      drawnRobot: drawnRobotUrl(), drawnStationState: state.stationState, sphereMask: spheres.map((x) => x.material.uniforms.maskOn.value),
       extraVisible: state.extraRoot.visible && state.extraRoot.children.length > 0,
       pixelRatio: renderer.getPixelRatio() };
   },
