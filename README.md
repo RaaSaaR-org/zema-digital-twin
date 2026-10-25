@@ -12,8 +12,8 @@ all vendored). It needs a WebGL2 browser.
 
 ## What is new
 
-- **The G1 station as it is today is the default.** It comes from the hand-held video: posts with red belt
-  barriers, a yellow mat, a black gantry with the G1 hanging in its harness, desks and the open ABB table. The G1
+- **The G1 station as it is today is the default.** Modelled from the hand-held video: posts with red belt
+  barriers, a yellow mat and a black gantry with the G1 hanging in its harness. The G1
   has the real robot's look (silver shells, black joints, helmet and Dex3 hands, blue wrist rings, visor).
   It is there from the first frame: the game starts only once the station and the G1 have loaded.
   `?station=tour` (or the settings panel) shows the station as it was on the tour day, with the G1 standing at the
@@ -65,9 +65,9 @@ On touch screens: left thumb walks, swipe on the right half to look.
 
 ## Size
 
-About 124 MB in 141 files. Largest files: `web_data/hall_hi.glb` 40.3 MB and `web_data/splats/hall_aisle.spz`
+About 124 MB in 149 files. Largest files: `web_data/hall_hi.glb` 40.3 MB and `web_data/splats/hall_aisle.spz`
 27.4 MB, so every file is below GitHub's 50 MB limit. The site is playable after about 11 MB (engine, collider,
-low-quality hall, maps and today's G1 station collider); today's station (3.7 MB) loads right after. On quality
+low-quality hall, maps and today's G1 station collider); today's station (about 4 MB) loads right after. On quality
 high the 40 MB hall and the 4096 px photos load in the background; the splat layer (27.4 MB plus the 2.7 MB Spark
 renderer) is downloaded only when it switches on.
 
@@ -83,8 +83,9 @@ python3 -m http.server 8000   # then open http://localhost:8000/
 
 The twin matches the tour closely when seen from the tour's camera positions. Between them it is a visible
 reconstruction: thin structures such as truss towers, posts and glass are fragmented or missing, and the south and
-west parts of the hall are barely covered. The splat layer only covers the main aisle, and today's G1 station is
-only complete from the side the video saw. Three stations (Flexible Montage, Ergonomieverbesserung, MRK Industrie
+west parts of the hall are barely covered. The splat layer only covers the main aisle. Where the old black cell
+stood, the photos show a plain pale surface behind today's G1 station, and the desks around it are drawn as they
+were on the tour day. Three stations (Flexible Montage, Ergonomieverbesserung, MRK Industrie
 4.0) are available as photos only.
 
 ## Licences
